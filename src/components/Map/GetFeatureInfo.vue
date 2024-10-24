@@ -22,8 +22,8 @@
             open-delay="500"
             content-class="custom-tooltip"
           >
-            <template v-slot:activator="{ on }">
-              <span v-on="on">{{ item.name }}</span>
+            <template v-slot:activator="{ props }">
+              <span v-bind="props">{{ item.name }}</span>
             </template>
             <span class="dont-break-out">{{ item.name }}</span>
           </v-tooltip>
@@ -331,26 +331,26 @@ export default {
 #treeviewGFI {
   font-size: 0.8em;
 }
-#treeviewGFI::v-deep .v-icon.v-icon::after {
+#treeviewGFI:deep(.v-icon.v-icon::after) {
   transform: scale(1);
 }
-#treeviewGFI::v-deep .v-treeview-node__content {
+#treeviewGFI:deep(.v-treeview-node__content) {
   margin-left: -2px;
 }
-#treeviewGFI::v-deep .v-treeview-node__level {
+#treeviewGFI:deep(.v-treeview-node__level) {
   width: 16px;
 }
-#treeviewGFI::v-deep .v-treeview-node__prepend {
+#treeviewGFI:deep(.v-treeview-node__prepend) {
   margin-right: 0;
 }
-#treeviewGFI::v-deep .v-treeview-node__root {
+#treeviewGFI:deep(.v-treeview-node__root) {
   min-height: 22px;
 }
-#treeviewGFI::v-deep .v-treeview-node .v-treeview-node__toggle {
+#treeviewGFI:deep(.v-treeview-node .v-treeview-node__toggle) {
   display: none !important;
 }
 
-#treeviewGFI::v-deep .v-treeview-node__children .v-treeview-node__toggle {
+#treeviewGFI:deep(.v-treeview-node__children .v-treeview-node__toggle) {
   display: inline-flex !important;
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
-  <v-menu top offset-y nudge-top="10">
+  <v-menu location="top" offset="10">
     <template v-slot:activator="{ props }">
       <v-btn
         class="controller-options"
+        :class="hide ? 'hide-controls' : ''"
         color="primary"
-        small
+        size="28"
         v-bind="props"
+        variant="text"
         icon
         :disabled="isAnimating"
       >
@@ -13,16 +15,18 @@
       </v-btn>
     </template>
 
-    <v-card @click.stop class="pb-1 options-card">
+    <v-card @click.stop class="options-card">
       <v-card-subtitle class="pa-2">
-        {{ $t("ControllerOptions") }}
+        {{ $t('ControllerOptions') }}
       </v-card-subtitle>
       <v-switch
         v-for="action in controllerOptions"
         :key="action"
         hide-details
-        class="px-3 pt-0 pb-2 mt-0"
-        :input-value="action === 'Loop' ? isLooping : false"
+        class="px-3 controller-options-switches"
+        color="primary"
+        density="compact"
+        :model-value="action === 'Loop' ? isLooping : false"
         @change="$emit('action-clicked', action)"
       >
         <template v-slot:label>
@@ -42,23 +46,30 @@
 <script>
 export default {
   inject: ['store'],
+  props: {
+    hide: Boolean,
+  },
   mounted() {
     this.$nextTick(() => {
       if (this.isLooping) {
-        this.$emit("action-clicked", "Loop");
+        this.$emit('action-clicked', 'Loop')
       }
-    });
+    })
   },
   data() {
     return {
-      controllerOptions: ["Reverse", "Loop"],
-    };
+      controllerOptions: ['Reverse', 'Loop'],
+    }
   },
   computed: {
-    isAnimating(){return this.store.getIsAnimating},
-    isLooping(){return this.store.getIsLooping},
+    isAnimating() {
+      return this.store.getIsAnimating
+    },
+    isLooping() {
+      return this.store.getIsLooping
+    },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -68,6 +79,12 @@ export default {
 }
 .controller-options-icon {
   font-size: 20px !important;
+}
+.controller-options-switches {
+  margin-top: -8px;
+}
+.hide-controls {
+  display: none;
 }
 .options-card {
   min-width: 150px;

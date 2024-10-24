@@ -6,10 +6,12 @@
           v-for="(item, index) in layerListReversed"
           :key="item.get('layerName')"
           outlined
-          class="px-0"
+          class="pl-0"
           :class="{
             'item-padding':
               !isAnimating || configPanelHover || playState !== 'play',
+            'pr-3': numLayers === 1,
+            'pr-0': numLayers !== 0,
           }"
         >
           <template
@@ -68,7 +70,6 @@
                 />
               </v-row>
             </v-col>
-            <v-divider v-if="numLayers - 1 !== index"></v-divider>
           </template>
           <template v-slot:append>
             <v-list-item-action
@@ -207,10 +208,6 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: calc(100vh - (34px + 0.5em * 2) - 0.5em - 138px - 48px);
-}
-.v-input.model-run.mr-text.v-input--hide-details.v-input--is-label-active.v-input--is-dirty.v-input--is-disabled.v-text-field.v-text-field--is-booted {
-  margin: 0;
-  padding: 0;
 }
 @media (max-width: 1120px) {
   .scroll {

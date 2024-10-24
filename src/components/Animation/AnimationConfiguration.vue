@@ -16,6 +16,7 @@
         maxlength="250"
         dense
         clearable
+        @keydown.stop
         :disabled="isAnimating"
         :hint="$t('MP4CreateTitleHint')"
         :label="$t('MP4CreateCustomTitle')"
@@ -66,6 +67,7 @@
           max="30"
           pattern="\d+"
           class="fps-selector"
+          @keydown.stop
         >
           <template v-slot:label>
             <v-tooltip location="top">
@@ -101,10 +103,10 @@
         @change="setResolution"
       >
         <template v-slot:item="{ item }">
-          {{ formatResolutionName(item) }}
+          {{ formatResolutionName(item.value) }}
         </template>
         <template v-slot:selection="{ item }">
-          {{ formatResolutionName(item) }}
+          {{ formatResolutionName(item.value) }}
         </template>
       </v-select>
     </v-col>
