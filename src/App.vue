@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import { useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n'
 
 export default {
-  name: "App",
+  name: 'App',
   inject: ['store'],
   data() {
     return {
@@ -18,24 +18,24 @@ export default {
     }
   },
   created() {
-    const userLangChoice = this.getLang();
-    let lang = "en";
+    const userLangChoice = this.getLang()
+    let lang = 'en'
     if (userLangChoice !== null) {
-      lang = userLangChoice;
+      lang = userLangChoice
     } else {
-      const locale = navigator.language.split("-")[0];
-      lang = locale === "fr" ? "fr" : "en";
+      const locale = navigator.language.split('-')[0]
+      lang = locale === 'fr' ? 'fr' : 'en'
     }
-    this.store.setLang(lang);
-    this.$i18n.locale = lang;
-    document.title = "MSC AniMet";
+    this.store.setLang(lang)
+    this.$i18n.locale = lang
+    document.title = 'MSC AniMet'
   },
   methods: {
     getLang() {
-      return localStorage.getItem("user-lang");
+      return localStorage.getItem('user-lang')
     },
   },
-};
+}
 </script>
 
 <style lang="scss">

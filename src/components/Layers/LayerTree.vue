@@ -44,6 +44,7 @@
               color="primary"
               density="compact"
               variant="underlined"
+              @keydown.stop
               @input="filterOnInput(index)"
               @click:clear="filterOnInput(index)"
             >
@@ -270,7 +271,7 @@ export default {
     filterOnInput(index) {
       if (this.searchGeoMet[index] !== null) {
         if (
-          this.searchGeoMet[index].length >= 3 &&
+          this.searchGeoMet[index].length >= 2 &&
           this.searchGeoMet[index] !== ''
         ) {
           this.activateNodeCheck = true

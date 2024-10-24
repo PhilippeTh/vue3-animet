@@ -21,52 +21,49 @@ export default defineConfig({
     VueRouter(),
     Layouts(),
     Vue({
-      template: { transformAssetUrls }
+      template: { transformAssetUrls },
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
       autoImport: true,
       icons: {
-        iconfont: "mdi",
+        iconfont: 'mdi',
       },
       theme: {
         dark: false,
         themes: {
           dark: {
-            primary: "#1689E7",
-            accent: "#4CBB99",
-            secondary: "#7BC6FF",
-            success: "#4CAF50",
-            info: "#2196F3",
-            warning: "#FB8C00",
-            error: "#FF5252",
+            primary: '#1689E7',
+            accent: '#4CBB99',
+            secondary: '#7BC6FF',
+            success: '#4CAF50',
+            info: '#2196F3',
+            warning: '#FB8C00',
+            error: '#FF5252',
           },
           light: {
-            primary: "#1689E7",
-            accent: "#4CBB99",
-            secondary: "#7BC6FF",
-            success: "#4CAF50",
-            info: "#2196F3",
-            warning: "#FB8C00",
-            error: "#FF5252",
+            primary: '#1689E7',
+            accent: '#4CBB99',
+            secondary: '#7BC6FF',
+            success: '#4CAF50',
+            info: '#2196F3',
+            warning: '#FB8C00',
+            error: '#FF5252',
           },
         },
       },
     }),
     Components(),
-    Fonts({
-      google: {
-        families: [{
-          name: 'Roboto',
-          styles: 'wght@100;300;400;500;700;900',
-        }],
-      },
-    }),
+    // Fonts({
+    //   google: {
+    //     families: [{
+    //       name: 'Roboto',
+    //       styles: 'wght@100;300;400;500;700;900',
+    //     }],
+    //   },
+    // }),
     AutoImport({
-      imports: [
-        'vue',
-        'vue-router',
-      ],
+      imports: ['vue', 'vue-router'],
       eslintrc: {
         enabled: true,
       },
@@ -76,17 +73,9 @@ export default defineConfig({
   define: { 'process.env': {} },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-    extensions: [
-      '.js',
-      '.json',
-      '.jsx',
-      '.mjs',
-      '.ts',
-      '.tsx',
-      '.vue',
-    ],
+    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
   // chainWebpack: (config) => {
   //   // ensure index.html is not minified

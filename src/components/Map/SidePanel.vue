@@ -88,12 +88,12 @@
               v-show="$mapLayers.arr.length !== 0"
             />
           </v-tabs-window-item>
-          <!-- <v-tabs-window-item eager>
+          <v-tabs-window-item eager>
             <animation-configuration
               id="animation-configuration"
               v-show="mapTimeSettings.Step !== null"
             />
-          </v-tabs-window-item> -->
+          </v-tabs-window-item>
         </v-tabs-window>
       </v-container>
     </v-menu>

@@ -2,16 +2,15 @@
   <div id="time-snackbar">
     <v-snackbar
       class="snackbar"
-      top
+      location="top"
       v-model="notifyExtentRebuilt"
       :timeout="timeoutDuration"
     >
       {{ expiredSnackBarMessage }}
-      <template v-slot:action="{ attrs }">
+      <template v-slot:actions>
         <v-btn
           color="warning"
-          text
-          v-bind="attrs"
+          variant="text"
           @click="notifyExtentRebuilt = false"
         >
           {{ $t('Close') }}
@@ -22,15 +21,14 @@
     <v-snackbar
       class="snackbar"
       timeout="-1"
-      top
+      location="top"
       v-model="notifyCancelAnimateResize"
     >
       {{ $t('MP4CreateNotifyCancelAnimation') }}
-      <template v-slot:action="{ attrs }">
+      <template v-slot:actions>
         <v-btn
           color="warning"
-          text
-          v-bind="attrs"
+          variant="text"
           @click="notifyCancelAnimateResize = false"
         >
           {{ $t('Close') }}
@@ -38,14 +36,18 @@
       </template>
     </v-snackbar>
 
-    <v-snackbar class="snackbar" timeout="-1" top v-model="notifyWrongFormat">
+    <v-snackbar
+      class="snackbar"
+      timeout="-1"
+      location="top"
+      v-model="notifyWrongFormat"
+    >
       <span class="snackMessage">{{ $t('WrongTimeFormat') }}</span>
 
-      <template v-slot:action="{ attrs }">
+      <template v-slot:actions>
         <v-btn
           color="warning"
-          text
-          v-bind="attrs"
+          variant="text"
           @click="notifyWrongFormat = false"
         >
           {{ $t('Close') }}
@@ -91,15 +93,6 @@ export default {
       t: useI18n().t,
       timeoutDuration: 6000,
       timeoutHandles: {},
-      xsltTime: `parse-xml($xml)//Layer[not(.//Layer) and Name = 'REPLACE_WITH_LAYERNAME']!map
-                      {
-                          'Dimension' : map
-                          {
-                              'Dimension_time' : string(Dimension[@name = 'time']),
-                              'Dimension_time_default' : string(Dimension[@name = 'time']/@default),
-                              'Dimension_ref_time' : string(Dimension[@name = 'reference_time'])
-                          }
-                      }`,
     }
   },
   methods: {
@@ -345,7 +338,7 @@ export default {
             response.data,
             'text/xml',
           )
-          const layerName = layer.xmlName
+          const layerName = layer.get('layerXmlName')
           const xpathExpression = `//wms:Layer[not(.//wms:Layer) and wms:Name='${layerName}']`
           function nsResolver(prefix) {
             const ns = {
