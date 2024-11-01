@@ -231,7 +231,7 @@ export default {
           })
           newLayer.setProperties(originalProperties)
           newLayer.getSource().on('imageloaderror', (e) => {
-            let layer = this.$mapLayers.arr.find(
+            const layer = this.$mapLayers.arr.find(
               (l) => l.get('layerName') === newLayer.get('layerName'),
             )
             this.emitter.emit('loadingError', { layer: layer, error: e })
@@ -337,14 +337,17 @@ export default {
     showGraticules() {
       return this.store.getShowGraticules
     },
-    dateIndex() {
-      return this.mapTimeSettings.DateIndex
+    dateIndexExtent() {
+      return [this.mapTimeSettings.DateIndex, this.mapTimeSettings.Extent]
     },
   },
   watch: {
-    dateIndex: {
+    dateIndexExtent: {
       deep: true,
-      handler(newIndex, oldIndex) {
+      handler([newIndex, newExtent], [oldIndex, oldExtent]) {
+        // Vue 3 watchers no longer get called if the same value is reassigned
+        // Added a secondary watcher on extent to make sure the animation updates
+        // when a value changes or gets removed from the extent
         let correctIndex
         if (!this.isAnimationReversed) {
           correctIndex =

@@ -103,7 +103,11 @@ export default {
   },
   methods: {
     closeMenu(event) {
-      if (event.key === 'Escape' && this.overlay !== null) {
+      if (
+        event.key === 'Escape' &&
+        this.overlay !== null &&
+        !event.defaultPrevented
+      ) {
         this.closePopup()
       }
     },

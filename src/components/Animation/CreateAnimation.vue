@@ -26,14 +26,17 @@
       </template>
       <span>{{ $t('MakeLayersVisible') }}</span>
     </v-tooltip>
-    <div v-if="isAnimating && playState !== 'play'" class="animation-progress">
+    <div
+      v-if="isAnimating && playState !== 'play'"
+      class="animation-progress-wrapper"
+    >
       <v-row>
         <v-col class="d-flex">
           <v-progress-linear
-            :value="MP4ProgressPercent"
+            :model-value="MP4ProgressPercent"
+            color="primary"
             height="36"
-            rounded
-            class="mr-3"
+            class="mr-2 animation-progress"
           >
             <strong>{{ MP4ProgressPercent }} %</strong>
           </v-progress-linear>
@@ -55,6 +58,7 @@
 <script>
 import canvasTxt from 'canvas-txt'
 import OLImage from 'ol/layer/Image'
+import { markRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import * as HME from 'h264-mp4-encoder'
@@ -154,14 +158,8 @@ export default {
         )
       }
     },
-    trackCreateMP4() {
-      if (this.appIsProductionEnv === 'production') {
-        _paq.push(['trackEvent', 'Button', 'Click', 'Create animation'])
-      }
-    },
     async createMP4() {
       this.emitter.emit('setAnimationTitle')
-      this.trackCreateMP4()
       this.createMP4Handler()
       this.outputDate = this.storeOutputDate
       this.store.setOutputDate(
@@ -194,8 +192,11 @@ export default {
         this.animationTitle,
       )
       this.dateCanvas = this.getDateCanvas()
-
-      this.encoder = await HME.createH264MP4Encoder()
+      const encoder = await HME.createH264MP4Encoder()
+      // This is to prevent encoder from becoming a proxy object through Vue 3
+      // Otherwise this code would fail when trying to set the width saying:
+      // "property 'c' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '#<Object>' but got '#<Object>')"
+      this.encoder = markRaw(encoder)
       this.encoder.width = this.mapWidth
       this.encoder.height = this.mapHeight
       this.encoder.frameRate = this.framesPerSecond
@@ -1056,7 +1057,6 @@ export default {
   data() {
     return {
       animationController: null,
-      appIsProductionEnv: process.env.NODE_ENV,
       encoder: null,
       generating: false,
       imgURL: null,
@@ -1079,7 +1079,10 @@ export default {
 </script>
 
 <style scoped>
-.animation-progress {
+.animation-progress-wrapper {
   overflow: hidden;
+}
+.animation-progress {
+  border-radius: 4px;
 }
 </style>

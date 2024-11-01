@@ -41,7 +41,7 @@
             density="compact"
             variant="outlined"
             @input="filterOnInput()"
-            @keydown.stop
+            @keydown.left.right.stop
             @click:clear="filterOnInput()"
           ></v-text-field>
           <div ref="locale-tree">
