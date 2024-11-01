@@ -44,7 +44,7 @@
               color="primary"
               density="compact"
               variant="underlined"
-              @keydown.stop
+              @keydown.left.right.stop
               @input="filterOnInput(index)"
               @click:clear="filterOnInput(index)"
             >

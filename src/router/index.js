@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
 
-import Home from '@/views/Home.vue';
-import MultiDisplay from '@/views/MultiDisplay.vue';
-import NotFound from '@/views/NotFound.vue';
+import Home from '@/views/Home.vue'
+import MultiDisplay from '@/views/MultiDisplay.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -31,30 +31,30 @@ const routes = [
     name: 'NotFound',
     component: NotFound,
   },
-];
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes: routes,
 })
 
 router.beforeEach((to, from, next) => {
   // Normalize the path by removing multiple slashes
-  const cleanedPath = to.path.replace(/\/\/+/g, '/');
-  const cleanedFullPath = to.fullPath.replace(/\/\/+/g, '/');
-  let newPath;
+  const cleanedPath = to.path.replace(/\/\/+/g, '/')
+  const cleanedFullPath = to.fullPath.replace(/\/\/+/g, '/')
+  let newPath
   if (cleanedPath === '/') {
-    newPath = cleanedFullPath;
+    newPath = cleanedFullPath
   } else {
-    newPath = cleanedFullPath.replace(cleanedPath, '');
+    newPath = cleanedFullPath.replace(cleanedPath, '')
   }
 
   if (cleanedPath !== to.path) {
-    next({ path: newPath, replace: true });
+    next({ path: newPath, replace: true })
   } else {
-    next();
+    next()
   }
-});
+})
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {

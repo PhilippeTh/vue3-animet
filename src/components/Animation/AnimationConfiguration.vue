@@ -1,30 +1,30 @@
 <template>
-  <div class="scroll">
+  <v-card class="radius scroll">
     <v-col class="options pt-0">
       <v-alert
         v-if="intersectMessage"
-        dense
-        outlined
-        type="warning"
         class="replace-legends"
+        density="compact"
+        type="warning"
+        variant="outlined"
         >{{ $t('ReplaceLegends') }}
       </v-alert>
       <v-text-field
-        class="title-field"
+        class="pt-1 title-field"
         v-model="animationTitle"
-        counter="250"
-        maxlength="250"
-        dense
+        density="compact"
+        variant="underlined"
         clearable
-        @keydown.stop
+        hide-details
+        @keydown.left.right.stop
         :disabled="isAnimating"
-        :hint="$t('MP4CreateTitleHint')"
         :label="$t('MP4CreateCustomTitle')"
       ></v-text-field>
-
       <v-col class="d-flex align-center">
         <v-switch
           class="reverse-switch"
+          color="primary"
+          density="compact"
           :disabled="
             isAnimating ||
             datetimeRangeSlider[0] === datetimeRangeSlider[1] ||
@@ -39,6 +39,8 @@
       <v-switch
         hide-details
         class="colored-border-switch"
+        color="primary"
+        density="compact"
         :disabled="isAnimating"
         :label="$t('ColorBorder')"
         v-model="colorBorder"
@@ -47,11 +49,13 @@
         <v-select
           hide-details
           class="res-select res-width"
+          density="compact"
+          variant="underlined"
           v-model="currentResolution"
           :label="$t('VideoFormat')"
           :items="resOptions"
           :disabled="isAnimating"
-          @change="setResolution"
+          @update:modelValue="setResolution"
         >
         </v-select>
         <v-text-field
@@ -62,12 +66,16 @@
             outputFormat !== 'MP4'
           "
           v-model="framesPerSecond"
+          @update:focused="checkFPS"
           type="number"
           min="1"
           max="30"
           pattern="\d+"
           class="fps-selector"
-          @keydown.stop
+          density="compact"
+          variant="underlined"
+          @keydown.left.right.stop
+          @keydown.enter.stop
         >
           <template v-slot:label>
             <v-tooltip location="top">
@@ -82,6 +90,8 @@
         <v-select
           hide-details
           class="res-select output-width"
+          density="compact"
+          variant="underlined"
           v-model="outputFormat"
           :label="$t('OutputFormat')"
           :items="outputOptions"
@@ -96,23 +106,29 @@
       <v-select
         hide-details
         class="res-select"
+        density="compact"
+        variant="underlined"
         v-model="aspectRatio"
         :label="$t('AspectSelection')"
         :items="Object.keys(resDict)"
         :disabled="isAnimating"
-        @change="setResolution"
+        @update:modelValue="setResolution"
       >
-        <template v-slot:item="{ item }">
-          {{ formatResolutionName(item.value) }}
+        <template v-slot:item="{ props, item }">
+          <v-list-item v-bind="props">
+            <template v-slot:title>
+              <span>{{ formatResolutionName(item.value) }}</span>
+            </template>
+          </v-list-item>
         </template>
         <template v-slot:selection="{ item }">
-          {{ formatResolutionName(item.value) }}
+          <span>{{ formatResolutionName(item.value) }}</span>
         </template>
       </v-select>
     </v-col>
     <create-animation />
     <export-animation v-if="MP4ExportFlag" />
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -218,6 +234,17 @@ export default {
     ExportAnimation,
   },
   methods: {
+    checkFPS(focused) {
+      if (!focused) {
+        if (this.framesPerSecond === '') {
+          this.store.setFramesPerSecond(3)
+        } else if (parseInt(this.framesPerSecond) > 30) {
+          this.store.setFramesPerSecond(30)
+        } else if (parseInt(this.framesPerSecond) < 1) {
+          this.store.setFramesPerSecond(1)
+        }
+      }
+    },
     formatResolutionName(resolution) {
       return `${this.t(this.resDict[resolution].name)}${this.t('Colon')} ${
         this.resDict[resolution][this.currentResolution].width
@@ -283,8 +310,14 @@ export default {
     isAnimating() {
       return this.store.getIsAnimating
     },
+    layersLength() {
+      return this.$mapLayers.arr.length
+    },
     mapTimeSettings() {
       return this.store.getMapTimeSettings
+    },
+    MP4ExportFlag() {
+      return this.mp4URL !== null || this.imgURL !== null
     },
     mp4URL() {
       return this.store.getMP4URL
@@ -326,34 +359,8 @@ export default {
         return this.store.getFramesPerSecond
       },
       set(fps) {
-        if (fps === '') {
-          if (this.framesPerSecond === 3) {
-            this.store.setFramesPerSecond(4)
-          } else {
-            this.store.setFramesPerSecond(3)
-          }
-        } else if (parseInt(fps) > 30) {
-          if (this.framesPerSecond === 30) {
-            this.store.setFramesPerSecond(29)
-          } else {
-            this.store.setFramesPerSecond(30)
-          }
-        } else if (parseInt(fps) < 1) {
-          if (this.framesPerSecond === 1) {
-            this.store.setFramesPerSecond(2)
-          } else {
-            this.store.setFramesPerSecond(1)
-          }
-        } else {
-          this.store.setFramesPerSecond(parseInt(fps))
-        }
+        this.store.setFramesPerSecond(fps)
       },
-    },
-    layersLength() {
-      return this.$mapLayers.arr.length
-    },
-    MP4ExportFlag() {
-      return this.mp4URL !== null || this.imgURL !== null
     },
     outputFormat: {
       get() {
@@ -396,9 +403,19 @@ export default {
 }
 </script>
 
+<style>
+.title-field .v-field--active .v-label.v-field-label {
+  display: none;
+}
+.title-field .v-label.v-field-label {
+  transition: none !important;
+  transform: none !important;
+}
+</style>
+
 <style scoped>
 .colored-border-switch {
-  margin: 0 0 10px -4px;
+  margin: 0 0 8px 4px;
 }
 .fps-selector {
   margin-top: -2px;
@@ -410,15 +427,17 @@ export default {
 }
 .options-bottom {
   margin: auto;
-  margin-top: -22px;
+  margin-top: -16px;
 }
 .output-width {
   max-width: 110px;
 }
+.radius {
+  border-radius: 0px;
+}
 .replace-legends {
   font-size: 10pt;
   line-height: 1.1;
-  display: block;
   padding: 4px;
   margin-bottom: 6px;
   margin-top: 4px;
@@ -432,7 +451,7 @@ export default {
 }
 .reverse-switch {
   min-width: 180px;
-  margin: -12px -12px -8px -20px;
+  margin: -12px -12px -22px -8px;
   padding: 0;
 }
 .scroll {
@@ -440,8 +459,8 @@ export default {
   overflow-y: auto;
   max-height: calc(100vh - (34px + 0.5em * 2) - 0.5em - 138px - 48px);
 }
-.title-field:deep(.v-label--active) {
-  display: none;
+.title-field {
+  margin-top: -4px;
 }
 @media (max-width: 1120px) {
   .scroll {

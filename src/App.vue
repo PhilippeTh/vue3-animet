@@ -38,6 +38,17 @@ export default {
 }
 </script>
 
+<style>
+.v-tooltip > .v-overlay__content {
+  color: white;
+  background-color: rgb(84, 84, 84);
+}
+.v-theme--dark .v-snackbar__wrapper {
+  background-color: rgb(var(--v-theme-snackbarBackground)) !important;
+  color: rgb(var(--v-theme-snackbarText)) !important;
+}
+</style>
+
 <style lang="scss">
 html {
   overflow-y: hidden !important;

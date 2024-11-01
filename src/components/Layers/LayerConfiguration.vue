@@ -21,7 +21,7 @@
             <v-list-item-title :title="$t(item.get('layerName'))">
               {{ $t(item.get('layerName')) }}
             </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-subtitle class="layer-subtitle">
               {{ item.get('layerName') }}
             </v-list-item-subtitle>
             <div
@@ -40,7 +40,7 @@
               <v-list-item-title :title="$t(item.get('layerName'))">
                 {{ $t(item.get('layerName')) }}
               </v-list-item-title>
-              <v-list-item-subtitle>
+              <v-list-item-subtitle class="layer-subtitle">
                 {{ item.get('layerName') }}
               </v-list-item-subtitle>
 
@@ -182,6 +182,10 @@ export default {
   padding-bottom: 2px;
   padding-top: 2px;
 }
+.layer-subtitle {
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
@@ -196,10 +200,16 @@ export default {
 .mr-subtitle {
   margin-bottom: -8px;
   margin-top: -4px;
+  color: #747474;
 }
-.mr-text:deep(.v-label.v-label--active),
-.mr-text:deep(.v-input__append-inner) {
+.mr-text:deep(.v-field__append-inner),
+.mr-text:deep(.v-field__outline) {
   display: none;
+}
+.mr-text:deep(.v-field__input) {
+  padding: 0;
+  margin-top: -8px;
+  margin-bottom: -14px;
 }
 .radius {
   border-radius: 0px;

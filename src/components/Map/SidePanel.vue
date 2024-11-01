@@ -156,7 +156,7 @@ export default {
   },
   methods: {
     closeMenu(event) {
-      if (event.key === 'Escape' && this.menuOpen) {
+      if (event.key === 'Escape' && this.menuOpen && !event.defaultPrevented) {
         this.buttonShown = true
         this.menuOpen = false
       }
@@ -231,6 +231,11 @@ export default {
     },
   },
   watch: {
+    layersLength(newLength) {
+      if (newLength === 0) {
+        this.tab = 0
+      }
+    },
     tab(newTab, oldTab) {
       if (newTab === 2) {
         this.togglePreview(true)
@@ -287,7 +292,7 @@ export default {
   opacity: 0;
 }
 .hide-header {
-  margin-top: -48px;
+  margin-top: -56px;
   padding-top: 8px;
 }
 @media (max-width: 959px) {

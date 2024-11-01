@@ -12,12 +12,6 @@ export default {
   inject: ['store'],
   data() {
     return {
-      headerHeight: '0',
-      headerWidth: '0',
-      footerTop: '60px',
-      footerRight: '10px',
-      footerHeight: '10px',
-      footerWidth: '20px',
       t: useI18n().t,
     }
   },
@@ -226,7 +220,7 @@ export default {
       const percentageHeader =
         (headerH / this.currentAspect[this.currentResolution].height) * 100
 
-      // let styleSheet = document.styleSheets[0]
+      let styleSheet = document.styleSheets[0]
       const percentageTopDate =
         ((headerH + 10) / this.currentAspect[this.currentResolution].height) *
         100
@@ -238,29 +232,20 @@ export default {
       const percentageHeightDate =
         (dateHeight / this.currentAspect[this.currentResolution].height) * 100
 
-      this.footerTop = `${percentageTopDate}% !important`
-      this.footerRight = `${percentageRightDate}% !important`
-      this.footerHeight = `${percentageHeightDate}% !important`
-      this.footerWidth = `${percentageWidthDate}% !important`
-      // const footerRule = `#animation-rect::after { top: ${percentageTopDate}% !important; right: ${percentageRightDate}% !important; width: ${percentageWidthDate}% !important;  height: ${percentageHeightDate}% !important; }`
+      const element = document.getElementById('animation-rect')
+      const footerRule = `#animation-rect::after { top: ${percentageTopDate}% !important; right: ${percentageRightDate}% !important; width: ${percentageWidthDate}% !important;  height: ${percentageHeightDate}% !important; }`
 
-      // styleSheet.insertRule(footerRule, styleSheet.cssRules.length)
+      styleSheet.insertRule(footerRule, styleSheet.cssRules.length)
 
       if (footerW !== mapW) {
-        document.getElementById('animation-rect').style.background =
-          `linear-gradient(to bottom, rgba(255, 255, 255, 0.75) ${percentageHeader}%, transparent ${percentageHeader}%, transparent 0%)`
+        element.style.background = `linear-gradient(to bottom, rgba(255, 255, 255, 0.75) ${percentageHeader}%, transparent ${percentageHeader}%, transparent 0%)`
         const percFooterWidth = (footerW / mapW) * 100
-        this.headerHeight = `${percentageFooter}% !important`
-        this.headerWidth = `${percFooterWidth}% !important`
-        // const headerRule = `#animation-rect::before { width: ${percFooterWidth}% !important; height: ${percentageFooter}% !important; }`
-        // styleSheet.insertRule(headerRule, styleSheet.cssRules.length)
+        const headerRule = `#animation-rect::before { width: ${percFooterWidth}% !important; height: ${percentageFooter}% !important; }`
+        styleSheet.insertRule(headerRule, styleSheet.cssRules.length)
       } else {
-        document.getElementById('animation-rect').style.background =
-          `linear-gradient(to bottom, rgba(255, 255, 255, 0.75) ${percentageHeader}%, transparent ${percentageHeader}%, transparent ${invPercentageFooter}%, rgba(255, 255, 255, 0.75) ${invPercentageFooter}%)`
-        this.headerHeight = '0 !important'
-        this.headerWidth = '0 !important'
-        // const headerRule = `#animation-rect::before { width: 0 !important; height: 0 !important; }`
-        // styleSheet.insertRule(headerRule, styleSheet.cssRules.length)
+        element.style.background = `linear-gradient(to bottom, rgba(255, 255, 255, 0.75) ${percentageHeader}%, transparent ${percentageHeader}%, transparent ${invPercentageFooter}%, rgba(255, 255, 255, 0.75) ${invPercentageFooter}%)`
+        const headerRule = `#animation-rect::before { width: 0 !important; height: 0 !important; }`
+        styleSheet.insertRule(headerRule, styleSheet.cssRules.length)
       }
     },
   },
@@ -304,17 +289,11 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: v-bind(headerWidth);
-  height: v-bind(headerHeight);
   background-color: rgba(255, 255, 255, 0.75);
 }
 #animation-rect::after {
   content: '';
   position: absolute;
-  top: v-bind(footerTop);
-  right: v-bind(footerRight);
-  width: v-bind(footerWidth);
-  height: v-bind(footerHeight);
   background-color: rgba(255, 255, 255, 0.75);
 }
 </style>

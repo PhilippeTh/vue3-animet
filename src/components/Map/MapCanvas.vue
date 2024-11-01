@@ -385,7 +385,10 @@ export default {
 
       imageLayer.getSource().on('imageloaderror', (e) => {
         if (this.isAnimating && this.playState !== 'play') return
-        this.emitter.emit('loadingError', { layer: imageLayer, error: e })
+        const layer = this.$mapLayers.arr.find(
+          (l) => l.get('layerName') === e.target.getParams()['LAYERS'],
+        )
+        this.emitter.emit('loadingError', { layer: layer, error: e })
       })
 
       imageLayer.getSource().updateParams({
@@ -410,7 +413,7 @@ export default {
     exitFullscreenOnEscape(event) {
       if (event.key === 'Escape') {
         this.store.setIsFullSize(false)
-        event.stopPropagation()
+        event.preventDefault()
       }
     },
     randomHSVtoRGB() {

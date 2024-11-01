@@ -57,7 +57,7 @@
           hide-details
           v-model="currentTime"
           @end="handleEnd"
-          @keydown.stop
+          @keydown.left.right.stop
         ></v-slider>
       </v-col>
     </v-row>
