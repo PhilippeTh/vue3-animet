@@ -8,39 +8,44 @@ import VueRouter from 'unplugin-vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  transpileDependencies: true,
-  plugins: [
-    nodePolyfills(),
-    VueRouter(),
-    Layouts(),
-    Vue({
-      template: { transformAssetUrls },
-    }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
-    Vuetify({
-      autoImport: true,
-    }),
-    Components(),
-    AutoImport({
-      imports: ['vue', 'vue-router'],
-      eslintrc: {
-        enabled: true,
+export default ({ mode }) => {
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
+
+  return defineConfig({
+    base: process.env.VITE_BASE_URL,
+    transpileDependencies: true,
+    plugins: [
+      nodePolyfills(),
+      VueRouter(),
+      Layouts(),
+      Vue({
+        template: { transformAssetUrls },
+      }),
+      // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+      Vuetify({
+        autoImport: true,
+      }),
+      Components(),
+      AutoImport({
+        imports: ['vue', 'vue-router'],
+        eslintrc: {
+          enabled: true,
+        },
+        vueTemplate: true,
+      }),
+    ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
-      vueTemplate: true,
-    }),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
     },
-    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
-  },
-  server: {
-    port: 3000,
-  },
-})
+    server: {
+      port: 3000,
+    },
+  })
+}
