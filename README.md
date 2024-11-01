@@ -1,79 +1,107 @@
-# Vuetify (Default)
+# MSC AniMet
 
-This is the official scaffolding tool for Vuetify, designed to give you a head start in building your new Vuetify application. It sets up a base template with all the necessary configurations and standard directory structure, enabling you to begin development without the hassle of setting up the project from scratch.
+## Overview
 
-## ❗️ Important Links
+MSC AniMet is a simple tool enabling users to interact with MSC Open Data weather data and create custom weather animations for any area in the world. The resulting animations can be downloaded and shared with a permalink.
 
-- 📄 [Docs](https://vuetifyjs.com/)
-- 🚨 [Issues](https://issues.vuetifyjs.com/)
-- 🏬 [Store](https://store.vuetifyjs.com/)
-- 🎮 [Playground](https://play.vuetifyjs.com/)
-- 💬 [Discord](https://community.vuetifyjs.com)
+MSC AniMet can be used to showcase a diversity of weather events such as storms, heat waves, hurricane trajectories, air quality events, extreme wind gusts, and much more.
 
-## 💿 Install
+In its current incarnation, MSC AniMet provides access to [GeoMet-Weather](https://eccc-msc.github.io/open-data/msc-geomet/readme_en/) layers.
 
-Set up your project using your preferred package manager. Use the corresponding command to install the dependencies:
+A publically available version can be found at [https://eccc-msc.github.io/msc-animet/](https://eccc-msc.github.io/msc-animet/) and the [associated documentation](https://eccc-msc.github.io/open-data/msc-animet/readme_en/) is available via the [Meteorological Service of Canada open data documentation](https://eccc-msc.github.io/open-data/).
 
-| Package Manager                                                | Command        |
-|---------------------------------------------------------------|----------------|
-| [yarn](https://yarnpkg.com/getting-started)                   | `yarn install` |
-| [npm](https://docs.npmjs.com/cli/v7/commands/npm-install)     | `npm install`  |
-| [pnpm](https://pnpm.io/installation)                          | `pnpm install` |
-| [bun](https://bun.sh/#getting-started)                        | `bun install`  |
+## Installation
 
-After completing the installation, your environment is ready for Vuetify development.
+### Requirements
 
-## ✨ Features
+- Node.js
 
-- 🖼️ **Optimized Front-End Stack**: Leverage the latest Vue 3 and Vuetify 3 for a modern, reactive UI development experience. [Vue 3](https://v3.vuejs.org/) | [Vuetify 3](https://vuetifyjs.com/en/)
-- 🗃️ **State Management**: Integrated with [Pinia](https://pinia.vuejs.org/), the intuitive, modular state management solution for Vue.
-- 🚦 **Routing and Layouts**: Utilizes Vue Router for SPA navigation and vite-plugin-vue-layouts for organizing Vue file layouts. [Vue Router](https://router.vuejs.org/) | [vite-plugin-vue-layouts](https://github.com/JohnCampionJr/vite-plugin-vue-layouts)
-- ⚡ **Next-Gen Tooling**: Powered by Vite, experience fast cold starts and instant HMR (Hot Module Replacement). [Vite](https://vitejs.dev/)
-- 🧩 **Automated Component Importing**: Streamline your workflow with unplugin-vue-components, automatically importing components as you use them. [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components)
+### Dependencies
 
-These features are curated to provide a seamless development experience from setup to deployment, ensuring that your Vuetify application is both powerful and maintainable.
+Dependencies are listed in [package.json](package.json). Dependencies
+are automatically installed during `MSC AniMet` installation.
 
-## 💡 Usage
-
-This section covers how to start the development server and build your project for production.
-
-### Starting the Development Server
-
-To start the development server with hot-reload, run the following command. The server will be accessible at [http://localhost:3000](http://localhost:3000):
+### Installing msc-animet
 
 ```bash
-yarn dev
+# clone codebase and install
+git clone https://github.com/ECCC-MSC/msc-animet.git
+cd msc-animet
+npm i
 ```
 
-(Repeat for npm, pnpm, and bun with respective commands.)
-
-> Add NODE_OPTIONS='--no-warnings' to suppress the JSON import warnings that happen as part of the Vuetify import mapping. If you are on Node [v21.3.0](https://nodejs.org/en/blog/release/v21.3.0) or higher, you can change this to NODE_OPTIONS='--disable-warning=5401'. If you don't mind the warning, you can remove this from your package.json dev script.
-
-### Building for Production
-
-To build your project for production, use:
+## Running
 
 ```bash
-yarn build
+npm run serve
 ```
 
-(Repeat for npm, pnpm, and bun with respective commands.)
+Server will be located at http://localhost:8080/msc-animet/
 
-Once the build process is completed, your application will be ready for deployment in a production environment.
+Note: The path will be different if you changed the BASE_URL in the .env file
 
-## 💪 Support Vuetify Development
+## Building for deployment
 
-This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library with a comprehensive collection of Vue components. Vuetify is an MIT licensed Open Source project that has been made possible due to the generous contributions by our [sponsors and backers](https://vuetifyjs.com/introduction/sponsors-and-backers/). If you are interested in supporting this project, please consider:
+```bash
+npm run build
+```
 
-- [Requesting Enterprise Support](https://support.vuetifyjs.com/)
-- [Sponsoring John on Github](https://github.com/users/johnleider/sponsorship)
-- [Sponsoring Kael on Github](https://github.com/users/kaelwd/sponsorship)
-- [Supporting the team on Open Collective](https://opencollective.com/vuetify)
-- [Becoming a sponsor on Patreon](https://www.patreon.com/vuetify)
-- [Becoming a subscriber on Tidelift](https://tidelift.com/subscription/npm/vuetify)
-- [Making a one-time donation with Paypal](https://paypal.me/vuetify)
+## Development
 
-## 📑 License
-[MIT](http://opensource.org/licenses/MIT)
+Bugs, enhancements and issues may be posted on [GitHub](https://github.com/ECCC-MSC/msc-animet/issues), but most are managed internally.
 
-Copyright (c) 2016-present Vuetify, LLC
+### Updating GeoMet-Weather layer tree names
+
+A static list of layer names and titles is generated for ease of translation and reference without needing to make a large request for the global WMS GetCapabilities document on application load. A Python script is used to update the `/src/locales/{lang}/layers` and the `/src/assets/trees/tree` json files for GeoMet Weather and GeoMet Climate. To update the layer name files, do the following (instructions for Linux):
+
+```bash
+# Set directory name of your Python virtual environment
+PYTHON_VENV=generate-tree-venv
+
+# Create Python virtual environment
+python3 -m venv --system-site-packages $PYTHON_VENV
+
+# Activate virtual env
+. $PYTHON_VENV/bin/activate
+
+# Install deps
+pip install owslib
+
+# Update layers_en|fr.json
+cd ./scripts
+python3 generate_trees_layers_list.py
+```
+
+### Adding custom WMS sources
+
+If you'd like to have your own instance of AniMet with more/other WMS sources for the layer tree, it's also possible, although for it to work they need to comply with the [OpenGIS Web Map Service (WMS) Implementation Specification](https://www.ogc.org/standard/wms/). The steps are as follows:
+
+First, on the [AniMet GitHub page](https://github.com/ECCC-MSC/msc-animet), make yourself a [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo). Once that's done, inside a terminal(commands shown are for a linux terminal), we will do the usual installation steps, except we'll be using your newly created fork instead, so:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/msc-animet.git
+cd msc-animet
+npm i
+git remote add upstream https://github.com/ECCC-MSC/msc-animet.git
+```
+
+Afterwards, we'll be changing the configuration file to specify which WMS sources we wish to have. That file is located inside `scripts/wms_sources_configs.json` and this is where we'll be adding our new sources. This process is quite simple; you simple give it a name, the url to the wms and the version, which would look like:
+
+```JSON
+{
+  "Weather": {
+    "url": "https://geo.weather.gc.ca/geomet",
+    "version": "1.3.0"
+  },
+  "Climate": {
+    "url": "https://geo.weather.gc.ca/geomet-climate",
+    "version": "1.3.0"
+  },
+  "Test": {
+    "url": "https://my_beautiful_wms",
+    "version": "1.3.0"
+  }
+}
+```
+
+Once that's done and you've saved the file, inside the terminal, all we have left to do is to run the script to [update the layer tree](#updating-geomet-weather-layer-tree-names) and [run](#running) the application, it's that easy!
