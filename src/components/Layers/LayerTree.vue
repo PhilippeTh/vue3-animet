@@ -72,7 +72,7 @@
             :disabled="isAnimating"
             hide-details
             class="pl-12"
-            @change="emitter.emit('overlayToggle', values, overlay)"
+            @change="emitter.emit('overlayToggle', { values, overlay })"
           >
             <template v-slot:label>
               <span

@@ -81,7 +81,7 @@
                 :disabled="index === 0 || (isAnimating && playState !== 'play')"
                 @click="changeLayerOrder(index - 1)"
                 icon
-                flat
+                variant="text"
               >
                 <v-icon> mdi-arrow-up </v-icon>
               </v-btn>
@@ -93,7 +93,7 @@
                 "
                 @click="changeLayerOrder(index)"
                 icon
-                flat
+                variant="text"
               >
                 <v-icon> mdi-arrow-down </v-icon>
               </v-btn>

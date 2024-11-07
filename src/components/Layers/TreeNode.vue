@@ -10,9 +10,13 @@
           icon
           class="icon-only-btn"
           density="comfortable"
+          variant="text"
           :disabled="isAnimating && playState !== 'play'"
         >
-          <v-icon color="primary">
+          <v-icon
+            color="primary"
+            :disabled="isAnimating && playState !== 'play'"
+          >
             {{
               $mapLayers.arr.some((l) => l.get('layerName') === node.Name)
                 ? 'mdi-minus'
@@ -96,6 +100,7 @@ const toggle = () => {
   }
 }
 const request = (node) => {
+  if (isAnimating && playState !== 'play') return
   emit('request', node)
 }
 
@@ -104,6 +109,7 @@ const bubbleNodeToggled = (nodeName, isOpen) => {
   emit('nodeToggled', nodeName, isOpen)
 }
 const bubbleNodeRequest = (node) => {
+  if (isAnimating && playState !== 'play') return
   emit('request', node)
 }
 </script>

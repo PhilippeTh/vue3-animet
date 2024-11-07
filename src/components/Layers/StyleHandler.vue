@@ -28,12 +28,13 @@
         <span>{{ $t('LayerStyle') }}</span>
       </v-tooltip>
     </template>
-    <v-container @click.stop :class="getCurrentTheme" class="pa-2">
+    <v-container @click.stop :class="getCurrentTheme" class="styles-container">
       <v-checkbox
         :disabled="isAnimating"
         :model-value="activeLegends.includes(item.get('layerName'))"
         hide-details
         class="font-weight-medium display-cb"
+        density="compact"
         :color="legendStyle(item.get('layerName'))"
         @update:model-value="
           (value) => toggleLegends(item.get('layerName'), value)
@@ -171,7 +172,9 @@ export default {
   overflow-y: auto;
   padding: 0;
 }
-.v-checkbox .v-selection-control {
-  min-height: unset;
+.styles-container {
+  border-radius: 4px;
+  margin-right: 8px !important;
+  padding: 0 0 2px 2px !important;
 }
 </style>

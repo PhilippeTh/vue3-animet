@@ -9,7 +9,7 @@
         variant="underlined"
         :items="uniqueTimestepsList"
         :disabled="uniqueTimestepsList.length === 0 || isAnimating"
-        @input="changeMapStep(selection)"
+        @update:modelValue="changeMapStep(selection)"
       >
         <template v-slot:item="{ props, item }">
           <v-list-item v-bind="props" :title="formatDuration(item.raw)">
@@ -29,7 +29,7 @@
         hide-details
         :items="uniqueTimestepsList"
         :disabled="uniqueTimestepsList.length === 0 || isAnimating"
-        @input="changeMapStep(selection)"
+        @update:modelValue="changeMapStep(selection)"
       >
         <template v-slot:item="{ props, item }">
           <v-list-item v-bind="props" :title="formatDuration(item.raw)">

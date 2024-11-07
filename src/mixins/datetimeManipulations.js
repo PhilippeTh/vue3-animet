@@ -66,7 +66,10 @@ export default {
         }
       }
       let dateIndex
-      if (timestep === this.mapTimeSettings.Step) {
+      if (
+        this.mapTimeSettings.DateIndex !== undefined &&
+        this.mapTimeSettings.DateIndex !== null
+      ) {
         const currentDateIndex = this.findLayerIndex(
           this.mapTimeSettings.Extent[this.mapTimeSettings.DateIndex],
           arrayCombine,
@@ -81,7 +84,7 @@ export default {
         } else if (currentDateIndex === -3) {
           dateIndex = this.mapTimeSettings.DateIndex
         }
-      } else if (!this.mapTimeSettings.DateIndex) {
+      } else {
         if (snappedLayer !== null) {
           dateIndex = this.findLayerIndex(
             snappedLayer.get('layerDefaultTime'),
@@ -95,8 +98,6 @@ export default {
             timeLayers[0].get('layerTimeStep'),
           )
         }
-      } else {
-        dateIndex = this.mapTimeSettings.DateIndex
       }
       if (snappedLayer === null) {
         let currentSnappedLayer = timeLayers.find(

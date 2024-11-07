@@ -20,6 +20,7 @@
             variant="text"
             v-bind="props"
             class="locale-btn"
+            :disabled="isAnimating && playState !== 'play'"
           >
           </v-btn>
         </template>

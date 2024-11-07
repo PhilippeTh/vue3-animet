@@ -761,17 +761,12 @@ export default {
         ctx_h = ctx_h >= minHeight ? ctx_h : minHeight
         animetPlacement = ctx_h
         osmPlacement = ctx_h
-      } else if (!this.isLayerListShown && numModelRuns === 0) {
+      } else if (!this.isLayerListShown) {
         if (!this.$mapCanvas.mapObj.getLayers().getArray()[0].get('visible')) {
           ctx_h = 24
         }
-        ctx_w = metrics.width + 12
-      } else if (
-        (numModelRuns === 0 && this.isLayerListShown) ||
-        (numModelRuns !== 0 && !this.isLayerListShown)
-      ) {
-        if (!this.$mapCanvas.mapObj.getLayers().getArray()[0].get('visible')) {
-          ctx_h = 24
+        if (numModelRuns === 0) {
+          ctx_w = metrics.width + 12
         }
       }
       infoCanvas.width = ctx_w
