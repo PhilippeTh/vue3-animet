@@ -100,7 +100,7 @@ const toggle = () => {
   }
 }
 const request = (node) => {
-  if (isAnimating && playState !== 'play') return
+  if (isAnimating.value && playState.value !== 'play') return
   emit('request', node)
 }
 
@@ -109,7 +109,7 @@ const bubbleNodeToggled = (nodeName, isOpen) => {
   emit('nodeToggled', nodeName, isOpen)
 }
 const bubbleNodeRequest = (node) => {
-  if (isAnimating && playState !== 'play') return
+  if (isAnimating.value && playState.value !== 'play') return
   emit('request', node)
 }
 </script>
