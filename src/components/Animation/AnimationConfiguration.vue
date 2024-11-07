@@ -359,7 +359,9 @@ export default {
         return this.store.getFramesPerSecond
       },
       set(fps) {
-        this.store.setFramesPerSecond(fps)
+        if (fps !== '') {
+          this.store.setFramesPerSecond(parseInt(fps))
+        }
       },
     },
     outputFormat: {

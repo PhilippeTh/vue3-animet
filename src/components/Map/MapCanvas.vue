@@ -293,7 +293,8 @@ export default {
         }
       }
     },
-    async manageOverlay(layer, layerName) {
+    async manageOverlay(overlayInfo) {
+      const { values: layer, overlay: layerName } = overlayInfo
       const layerFound = this.$mapCanvas.mapObj
         .getLayers()
         .getArray()

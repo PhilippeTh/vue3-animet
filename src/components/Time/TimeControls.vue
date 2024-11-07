@@ -270,7 +270,7 @@ export default {
         return
       }
     },
-    onExtentChanged(newExtent, newStep, oldExtent, oldStep) {
+    onExtentChanged(newExtent, newStep, oldExtent, oldStep, layerDiff = 0) {
       if (this.mapTimeSettings.SnappedLayer !== null && newStep !== oldStep) {
         return
       } else if (newStep !== oldStep) {
@@ -294,25 +294,41 @@ export default {
             last = this.findLayerIndex(lastDate, newExtent, newStep)
             last = last >= 0 ? last : newExtent.length - 1
           } else if (first === undefined) {
-            first =
-              last - (this.datetimeRangeSlider[1] - this.datetimeRangeSlider[0])
+            if (layerDiff !== 0) {
+              first = this.findLayerIndex(
+                oldExtent[this.datetimeRangeSlider[0]],
+                newExtent,
+                newStep,
+              )
+            } else {
+              first =
+                last -
+                (this.datetimeRangeSlider[1] - this.datetimeRangeSlider[0])
+            }
             if (first < 0 || first > newExtent.length - 1 || first > last) {
               first = 0
             }
-            const currentDate = this.findLayerIndex(
-              oldExtent[this.mapTimeSettings.DateIndex],
-              newExtent,
-              newStep,
-            )
-            if (currentDate < first) {
-              this.store.setMapTimeIndex(first)
-            }
           } else if (last === undefined) {
-            last =
-              this.datetimeRangeSlider[1] - this.datetimeRangeSlider[0] + first
+            if (layerDiff !== 0) {
+              last = this.findLayerIndex(
+                oldExtent[this.datetimeRangeSlider[1]],
+                newExtent,
+                newStep,
+              )
+            } else {
+              last =
+                this.datetimeRangeSlider[1] -
+                this.datetimeRangeSlider[0] +
+                first
+            }
             if (last < 0 || last > newExtent.length - 1 || first > last) {
               last = newExtent.length - 1
             }
+          }
+          if (this.mapTimeSettings.DateIndex < first) {
+            this.store.setMapTimeIndex(first)
+          } else if (this.mapTimeSettings.DateIndex > last) {
+            this.store.setMapTimeIndex(last)
           }
           this.store.setDatetimeRangeSlider([first, last])
         } else {
@@ -335,23 +351,10 @@ export default {
         this.mapTimeSettings.Extent,
         newSnappedLayer.get('layerTimeStep'),
       )
-      if (
-        this.mapTimeSettings.DateIndex < first ||
-        this.mapTimeSettings.DateIndex > last
-      ) {
-        let newCurrent = this.findLayerIndex(
-          newSnappedLayer.get('layerDefaultTime'),
-          this.mapTimeSettings.Extent,
-          newSnappedLayer.get('layerTimeStep'),
-        )
-        if (newCurrent < 0) {
-          newCurrent = this.findLayerIndex(
-            newSnappedLayer.get('layerStartTime'),
-            this.mapTimeSettings.Extent,
-            newSnappedLayer.get('layerTimeStep'),
-          )
-        }
-        this.store.setMapTimeIndex(newCurrent)
+      if (this.mapTimeSettings.DateIndex < first) {
+        this.store.setMapTimeIndex(first)
+      } else if (this.mapTimeSettings.DateIndex > last) {
+        this.store.setMapTimeIndex(last)
       }
       this.store.setDatetimeRangeSlider([first, last])
     },
@@ -403,14 +406,23 @@ export default {
     },
     extent: {
       deep: true,
-      handler([newExtent, newStep], [oldExtent, oldStep]) {
+      handler(
+        [newExtent, newStep, newNumLayers],
+        [oldExtent, oldStep, oldNumLayers],
+      ) {
         if (oldExtent !== null && newExtent !== null) {
           if (
             newExtent[0].getTime() !== oldExtent[0].getTime() ||
             newExtent[newExtent.length - 1].getTime() !==
               oldExtent[oldExtent.length - 1].getTime()
           ) {
-            this.onExtentChanged(newExtent, newStep, oldExtent, oldStep)
+            this.onExtentChanged(
+              newExtent,
+              newStep,
+              oldExtent,
+              oldStep,
+              newNumLayers - oldNumLayers,
+            )
           } else if (this.mapTimeSettings.SnappedLayer !== null) {
             this.onSnappedLayerChanged(this.mapTimeSettings.SnappedLayer)
           } else if (newExtent.length !== oldExtent.length) {
@@ -471,7 +483,11 @@ export default {
       return [this.mapTimeSettings.DateIndex, this.mapTimeSettings.Extent]
     },
     extent() {
-      return [this.mapTimeSettings.Extent, this.mapTimeSettings.Step]
+      return [
+        this.mapTimeSettings.Extent,
+        this.mapTimeSettings.Step,
+        this.$mapLayers.arr.length,
+      ]
     },
     layerList() {
       return this.$mapLayers.arr.length

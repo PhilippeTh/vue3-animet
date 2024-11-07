@@ -158,21 +158,14 @@ export default {
             minHeight = (lastMRIndex + 1) * (baseFont + 8) + animetOffset - 6
           }
           ctx_h = ctx_h >= minHeight ? ctx_h : minHeight
-        } else if (!isLayerListShown && numModelRuns === 0) {
+        } else if (!isLayerListShown) {
           if (
             !this.$mapCanvas.mapObj.getLayers().getArray()[0].get('visible')
           ) {
             ctx_h = 24
           }
-          ctx_w = metrics.width + 12
-        } else if (
-          (numModelRuns === 0 && isLayerListShown) ||
-          (numModelRuns !== 0 && !isLayerListShown)
-        ) {
-          if (
-            !this.$mapCanvas.mapObj.getLayers().getArray()[0].get('visible')
-          ) {
-            ctx_h = 24
+          if (numModelRuns === 0) {
+            ctx_w = metrics.width + 12
           }
         }
         let outputHeaderCanvas = 50
