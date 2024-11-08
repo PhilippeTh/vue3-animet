@@ -121,6 +121,11 @@ export default {
     top: calc(34px + 0.5em * 2 + 42px) !important;
   }
 }
+@media (max-width: 565px) {
+  .customize-menu .v-overlay__content {
+    right: unset;
+  }
+}
 </style>
 
 <style scoped>

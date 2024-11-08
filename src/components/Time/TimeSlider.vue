@@ -204,7 +204,7 @@ export default {
     dateFormat() {
       if (this.screenWidth > 850) {
         return 'DATETIME_FULL'
-      } else if (this.screenWidth > 720) {
+      } else if (this.screenWidth > 740) {
         return 'DATETIME_MED'
       } else {
         return 'DATETIME_SHORT'

@@ -68,7 +68,10 @@
             :hide="collapsedControls"
             class="collapsed-play-pause-small"
           ></play-pause-controls>
-          <v-col class="mr-1 pt-2 pb-2 px-0">
+          <v-col
+            class="mr-1 pb-1 pt-2 pa-0"
+            :class="{ 'column-padding': collapsedControls }"
+          >
             <time-slider
               class="enable-events slider"
               :class="collapsedControls ? 'hide-controls' : ''"
@@ -546,6 +549,9 @@ export default {
   text-transform: none !important;
   white-space: nowrap !important;
 }
+.column-padding {
+  padding-top: 0 !important;
+}
 .controller-padding {
   margin-bottom: -16px;
   pointer-events: none;
@@ -614,14 +620,12 @@ export default {
     border-radius: 0;
     margin-left: 0;
     margin-top: -8px;
-    transform: translateY(-4px);
+    padding-top: 0 !important;
+    transform: translateY(8px);
     width: 100%;
   }
   .controller-padding {
     pointer-events: auto;
-  }
-  .extended {
-    transform: translateY(-4px);
   }
   #time-controls {
     padding-top: 0;

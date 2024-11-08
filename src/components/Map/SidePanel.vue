@@ -350,7 +350,7 @@ export default {
   max-width: 390px;
 }
 #layer-configuration {
-  width: 390px;
+  max-width: 390px;
 }
 #layer-tree {
   width: 700px;

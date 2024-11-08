@@ -1,19 +1,22 @@
 <template>
-  <v-card class="radius">
-    <v-tabs fixed-tabs v-model="tab">
+  <v-card class="radius" max-width="100%">
+    <v-tabs :show-arrows="displayTabArrows" v-model="tab">
       <v-tab
         v-for="(wmsSource, index) in Object.keys(geometWmsSources)"
         :key="index"
+        class="source-tabs"
         color="primary"
+        density="compact"
       >
         {{ $t(wmsSource) }}
         <v-tooltip location="top">
           <template v-slot:activator="{ props }">
             <v-chip
               v-if="isNightly == 1"
-              x-small
+              class="nightly-chip"
               color="info"
-              class="ml-1"
+              density="compact"
+              size="small"
               v-bind="props"
             >
               Nightly
@@ -22,7 +25,7 @@
           <span>{{ geometWmsSources[wmsSource].url }}</span>
         </v-tooltip>
       </v-tab>
-      <v-tab>{{ $t('Overlays') }}</v-tab>
+      <v-tab class="source-tabs" color="primary">{{ $t('Overlays') }}</v-tab>
     </v-tabs>
     <v-tabs-window v-model="tab">
       <v-tabs-window-item
@@ -92,6 +95,7 @@
 
 <script>
 import axios from '../../utils/AxiosConfig.js'
+import { useDisplay } from 'vuetify'
 
 import TreeNode from './TreeNode.vue'
 
@@ -101,6 +105,15 @@ export default {
     TreeNode,
   },
   created() {
+    const { smAndDown } = useDisplay()
+    this.$watch(
+      () => smAndDown.value,
+      (newValue) => {
+        this.smAndDown = newValue
+      },
+      { immediate: true },
+    )
+
     this.filteredTreeNodes.push(...this.geometTreeItems)
     this.searchGeoMet = new Array(
       Object.keys(this.geometWmsSources).length,
@@ -127,7 +140,7 @@ export default {
   },
   data() {
     return {
-      isNightly: process.env.VUE_APP_IS_NIGHTLY,
+      isNightly: import.meta.env.VITE_APP_IS_NIGHTLY,
       activateNodeCheck: false,
       addedLayers: [],
       closedNodes: new Set(),
@@ -135,6 +148,7 @@ export default {
       openedLevels: [],
       searchGeoMet: [],
       tab: null,
+      smAndDown: false,
     }
   },
   methods: {
@@ -337,6 +351,12 @@ export default {
     possibleOverlays() {
       return this.store.getPossibleOverlays
     },
+    displayTabArrows() {
+      return Boolean(
+        this.smAndDown &&
+          (this.isNightly || Object.keys(this.geometWmsSources).length > 2),
+      )
+    },
   },
 }
 </script>
@@ -345,10 +365,22 @@ export default {
 .radius {
   border-radius: 0px;
 }
+.source-tabs {
+  flex: 1;
+  padding: 0 4px;
+}
+.source-tabs:deep(.v-btn__content) {
+  white-space: normal;
+}
 .treeview {
   font-size: 1.11em;
   max-height: calc(100vh - (34px + 0.5em * 2) - 138px - 190px);
   overflow-y: auto;
+}
+.v-tabs:deep(.v-slide-group__next),
+.v-tabs:deep(.v-slide-group__prev) {
+  flex: 0 1;
+  min-width: 30px;
 }
 @media (max-width: 1120px) {
   .treeview {
@@ -361,16 +393,13 @@ export default {
   }
 }
 @media (max-width: 565px) {
+  .nightly-chip {
+    padding-left: 4px;
+    padding-right: 14px;
+    transform: translateX(-10px);
+  }
   .treeview {
     max-height: calc(100vh - (34px + 0.5em * 2) - 158px - 190px - 42px - 10px);
   }
 }
-/* .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right):deep(
-    .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
-        .v-slide-group--has-affixes
-      )
-  )
-  .v-slide-group__prev {
-  display: none !important;
-} */
 </style>
