@@ -27,6 +27,7 @@
         :label="$t('TimestepsDropdown')"
         v-model="selection"
         hide-details
+        variant="underlined"
         :items="uniqueTimestepsList"
         :disabled="uniqueTimestepsList.length === 0 || isAnimating"
         @update:modelValue="changeMapStep(selection)"
