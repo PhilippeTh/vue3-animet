@@ -1,17 +1,19 @@
-import { defineStore } from 'pinia';
-import layerTrees from '../assets/trees';
-import wmsSources from '../../scripts/wms_sources_configs.json';
-import IntegerAssigner from '../utils/IntegerAssigner.js';
+import { defineStore } from 'pinia'
+import layerTrees from '../assets/trees'
+import wmsSources from '../../scripts/wms_sources_configs.json'
+import IntegerAssigner from '../utils/IntegerAssigner.js'
 
 export const useStore = defineStore('store', {
   state: () => ({
     activeLegendsList: [],
     animationTitle: '',
     availableCRS: Object.keys(wmsSources).map((key) => {
-      const treeName = 'tree_en_' + key.toLowerCase();
-      const projections = 'proj_' + key.toLowerCase();
-      const projList = layerTrees[treeName][projections].map((item) => item.toUpperCase());
-      return projList;
+      const treeName = 'tree_en_' + key.toLowerCase()
+      const projections = 'proj_' + key.toLowerCase()
+      const projList = layerTrees[treeName][projections].map((item) =>
+        item.toUpperCase(),
+      )
+      return projList
     }),
     collapseControls: false,
     colorBorder: false,
@@ -50,12 +52,12 @@ export const useStore = defineStore('store', {
     isLooping: true,
     lang: 'en',
     layerTreeItemsEn: Object.keys(wmsSources).map((key) => {
-      const treeName = 'tree_en_' + key.toLowerCase();
-      return layerTrees[treeName][treeName];
+      const treeName = 'tree_en_' + key.toLowerCase()
+      return layerTrees[treeName][treeName]
     }),
     layerTreeItemsFr: Object.keys(wmsSources).map((key) => {
-      const treeName = 'tree_fr_' + key.toLowerCase();
-      return layerTrees[treeName][treeName];
+      const treeName = 'tree_fr_' + key.toLowerCase()
+      return layerTrees[treeName][treeName]
     }),
     mapTimeSettings: {
       SnappedLayer: null,
@@ -72,7 +74,8 @@ export const useStore = defineStore('store', {
     outputSize: null,
     overlays: {
       Boundaries: {
-        layers: 'boundary_large_01,boundary_small,boundary_mid,boundary_large_02,boundary_large_03',
+        layers:
+          'boundary_large_01,boundary_small,boundary_mid,boundary_large_02,boundary_large_03',
         url: 'https://maps.geogratis.gc.ca/wms/canvec_en',
         zIndex: 9998,
         isShown: false,
@@ -118,7 +121,8 @@ export const useStore = defineStore('store', {
     getIsBasemapVisible: (state) => state.isBasemapVisible,
     getIsLooping: (state) => state.isLooping,
     getIsFullSize: (state) => state.isFullSize,
-    getGeoMetTreeItems: (state) => (state.lang === 'en' ? state.layerTreeItemsEn : state.layerTreeItemsFr),
+    getGeoMetTreeItems: (state) =>
+      state.lang === 'en' ? state.layerTreeItemsEn : state.layerTreeItemsFr,
     getGeoMetWmsSources: (state) => state.wmsSources,
     getImgURL: (state) => state.imgURL,
     getIntersectMessageDisplayed: (state) => state.intersectDict,
@@ -144,145 +148,149 @@ export const useStore = defineStore('store', {
   },
   actions: {
     addActiveLegend(legend) {
-      this.legendIndex.addItem(legend);
-      this.activeLegendsList.push(legend);
+      this.legendIndex.addItem(legend)
+      this.activeLegendsList.push(legend)
     },
     addTimestep(timestep) {
-      this.fullTimestepsList.push(timestep);
+      this.fullTimestepsList.push(timestep)
       if (this.uniqueTimestepsList.indexOf(timestep) === -1) {
-        this.uniqueTimestepsList.push(timestep);
+        this.uniqueTimestepsList.push(timestep)
       }
     },
     removeActiveLegend(legend) {
-      this.legendIndex.removeItem(legend);
-      this.activeLegendsList = this.activeLegendsList.filter((l) => l !== legend);
+      this.legendIndex.removeItem(legend)
+      this.activeLegendsList = this.activeLegendsList.filter(
+        (l) => l !== legend,
+      )
     },
     removeIntersect(layerName) {
-      delete this.intersectDict[layerName];
+      delete this.intersectDict[layerName]
     },
     removeTimestep(timestep) {
-      this.fullTimestepsList.splice(this.fullTimestepsList.indexOf(timestep), 1);
+      this.fullTimestepsList.splice(this.fullTimestepsList.indexOf(timestep), 1)
       if (this.fullTimestepsList.indexOf(timestep) === -1) {
-        this.uniqueTimestepsList.splice(this.uniqueTimestepsList.indexOf(timestep), 1);
+        this.uniqueTimestepsList.splice(
+          this.uniqueTimestepsList.indexOf(timestep),
+          1,
+        )
       }
     },
     setAnimationTitle(title) {
-      this.animationTitle = title === null ? '' : title;
+      this.animationTitle = title === null ? '' : title
     },
     setCollapsedControls(collapsed) {
-      this.collapseControls = collapsed;
+      this.collapseControls = collapsed
     },
     setColorBorder(newStatus) {
-      this.colorBorder = newStatus;
+      this.colorBorder = newStatus
     },
     setConfigPanelHover(hovered) {
-      this.configPanelHover = hovered;
+      this.configPanelHover = hovered
     },
     setCurrentAspect(res) {
-      this.currentAspect = res;
+      this.currentAspect = res
     },
     setCurrentCRS(crs) {
-      this.currentCRS = crs;
+      this.currentCRS = crs
     },
     setCurrentResolution(opt) {
-      this.resolution = opt;
+      this.resolution = opt
     },
     setDatetimeRangeSlider(range) {
-      this.datetimeRangeSlider = range;
+      this.datetimeRangeSlider = range
     },
     setExtent([extent, rotation]) {
       if (rotation !== 0) {
-        extent.push(rotation);
+        extent.push(rotation)
       }
-      this.extent = extent;
+      this.extent = extent
     },
     setFramesPerSecond(fps) {
-      this.framesPerSecond = fps;
+      this.framesPerSecond = fps
     },
     setImgURL(newURL) {
-      this.imgURL = newURL;
+      this.imgURL = newURL
     },
     setIntersect([layerName, intersecting]) {
-      this.intersectDict[layerName] = intersecting;
+      this.intersectDict[layerName] = intersecting
     },
     setIsAnimating(newStatus) {
-      this.isAnimating = newStatus;
+      this.isAnimating = newStatus
     },
     setIsAnimationReversed(isReversed) {
-      this.isAnimationReversed = isReversed;
+      this.isAnimationReversed = isReversed
     },
     setIsBasemapVisible(newStatus) {
-      this.isBasemapVisible = newStatus;
+      this.isBasemapVisible = newStatus
     },
     setIsFullSize(fullSize) {
-      this.isFullSize = fullSize;
+      this.isFullSize = fullSize
     },
     setIsLooping(looping) {
-      this.isLooping = looping;
+      this.isLooping = looping
     },
     setLang(lang) {
-      this.lang = lang;
+      this.lang = lang
     },
     setMapSnappedLayer(layerName) {
-      this.mapTimeSettings.SnappedLayer = layerName;
+      this.mapTimeSettings.SnappedLayer = layerName
     },
     setMapTimeIndex(index) {
-      this.mapTimeSettings.DateIndex = index;
+      this.mapTimeSettings.DateIndex = index
     },
     setMapTimeSettings(settings) {
-      this.mapTimeSettings = settings;
+      this.mapTimeSettings = settings
     },
     setMenusOpen(open) {
       setTimeout(() => {
         if (open) {
-          this.menusOpen += 1;
+          this.menusOpen += 1
         } else {
-          this.menusOpen -= 1;
+          this.menusOpen -= 1
         }
-      }, 1000);
+      }, 1000)
     },
     setModelRunMessages(messages) {
-      this.modelRunMessages = messages;
+      this.modelRunMessages = messages
     },
     setMP4Percent(percent) {
-      this.MP4ProgressPercent = percent;
+      this.MP4ProgressPercent = percent
     },
     setMP4URL(URL) {
-      this.MP4URL = URL;
+      this.MP4URL = URL
     },
     setOutputDate(newOutputDate) {
-      this.outputDate = newOutputDate;
+      this.outputDate = newOutputDate
     },
     setOutputFormat(format) {
-      this.outputFormat = format;
+      this.outputFormat = format
     },
     setOutputSize(newSize) {
-      this.outputSize = newSize;
+      this.outputSize = newSize
     },
     setOverlayDisplayed(overlay) {
-      this.overlays[overlay]['isShown'] = !this.overlays[overlay]['isShown'];
+      this.overlays[overlay]['isShown'] = !this.overlays[overlay]['isShown']
     },
     setPendingErrorResolution(isPending) {
-      this.pendingErrorResolution = isPending;
+      this.pendingErrorResolution = isPending
     },
     setPermalink(permalink) {
-      this.permalink = permalink;
+      this.permalink = permalink
     },
     setPlayState(playState) {
-      this.playState = playState;
+      this.playState = playState
     },
     setRGB(newRGB) {
-      this.rgb = newRGB;
+      this.rgb = newRGB
     },
     setShowGraticules(isShown) {
-      this.showGraticules = isShown;
+      this.showGraticules = isShown
     },
     setTimeFormat(newTimeFormat) {
-      this.timeFormat = newTimeFormat;
+      this.timeFormat = newTimeFormat
     },
     setWmsSourceURL(newWmsSource) {
-      this.currentWmsSource = newWmsSource;
+      this.currentWmsSource = newWmsSource
     },
   },
-});
-
+})

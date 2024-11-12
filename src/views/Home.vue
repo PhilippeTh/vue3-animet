@@ -54,20 +54,21 @@ export default {
       })
       this.emitter.emit('goToExtent', castedExtent)
     }
-    if (this.color !== undefined) {
-      if (this.color.match(/none/gi)) {
+    if (this.basemap !== undefined) {
+      if (this.basemap === '0') {
         this.emitter.emit('invisibleBasemap')
-      } else {
-        let matchColor = /((\d{1,3}),(\d{1,3}),(\d{1,3}))/
-        let match = matchColor.exec(this.color)
-        if (match !== null) {
-          this.store.setRGB([
-            Number(match[2]),
-            Number(match[3]),
-            Number(match[4]),
-          ])
-          this.emitter.emit('permalinkColor', true)
-        }
+      }
+    }
+    if (this.color !== undefined) {
+      let matchColor = /((\d{1,3}),(\d{1,3}),(\d{1,3}))/
+      let match = matchColor.exec(this.color)
+      if (match !== null) {
+        this.store.setRGB([
+          Number(match[2]),
+          Number(match[3]),
+          Number(match[4]),
+        ])
+        this.emitter.emit('permalinkColor', true)
       }
     }
   },

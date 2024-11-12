@@ -508,7 +508,12 @@ export default {
       mapCanvas.width = this.mapWidth //size[0]
       mapCanvas.height = this.mapHeight //size[1]
       let mapContext = mapCanvas.getContext('2d')
-      mapContext.fillStyle = 'white'
+      if (this.$mapCanvas.mapObj.getLayers().getArray()[0].get('visible')) {
+        mapContext.fillStyle = 'white'
+      } else {
+        mapContext.fillStyle =
+          document.getElementById('map').style.backgroundColor
+      }
       mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height)
       Array.prototype.forEach.call(
         document.querySelectorAll('#animation-canvas .ol-layer canvas'),

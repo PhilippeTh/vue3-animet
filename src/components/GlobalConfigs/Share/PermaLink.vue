@@ -197,8 +197,10 @@ export default {
         }
 
         if (!this.isBasemapVisible) {
-          permalinktemp += `&color=None`
-        } else if (this.rgb.length !== 0) {
+          permalinktemp += `&basemap=0`
+        }
+
+        if (this.rgb.length !== 0) {
           permalinktemp += `&color=${this.rgb}`
         }
 

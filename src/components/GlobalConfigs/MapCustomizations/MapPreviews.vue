@@ -64,19 +64,20 @@ export default {
       backgrounds: {
         White: {
           name: 'white',
-          color: 'rgb(255, 255, 255)',
+          color: [255, 255, 255],
         },
         Grey: {
           name: 'grey',
-          color: 'rgb(158, 158, 158)',
+          color: [158, 158, 158],
         },
         Black: {
           name: 'black',
-          color: 'rgb(0, 0, 0)',
+          color: [0, 0, 0],
         },
       },
+      basemap: 'OSM',
       colors: [
-        { name: 'Base', rgb: null },
+        { name: 'Base', rgb: [null, null, null] },
         { name: 'Light', rgb: [255, 255, 255] },
         { name: 'Dark', rgb: [0, 0, 0] },
       ],
@@ -89,18 +90,14 @@ export default {
       },
       isMapColored: false,
       maps: {},
-      rgb: {
-        r: 200,
-        g: 200,
-        b: 200,
-      },
+      rgb: [255, 255, 255],
       selection: null,
-      sources: ['OSM', 'AlsoOSM', 'AlsoAlsoOSM'],
+      sources: ['OSM'],
     }
   },
   mounted() {
     this.emitter.on('invisibleBasemap', () => {
-      this.isMapColored = null
+      this.basemap = null
     })
     this.emitter.on('permalinkColor', () => {
       this.isMapColored = true
@@ -109,14 +106,6 @@ export default {
     this.updateProjection()
   },
   computed: {
-    color: {
-      get() {
-        return this.rgb
-      },
-      set(v) {
-        this.rgb = v
-      },
-    },
     crsList() {
       return this.store.getCrsList
     },
@@ -145,13 +134,41 @@ export default {
         if (
           Object.keys(oldVal).length === 0 &&
           Object.keys(newVal).length !== 0 &&
-          this.isMapColored
+          this.basemap !== null
         ) {
-          this.setColor()
-          this.coloredBasemapHandler(true)
-        } else if (this.isMapColored === null) {
-          this.isMapColored = false
-          this.whiteBasemapHandler(false)
+          if (this.isMapColored) {
+            this.setColor()
+            for (const color of this.colors) {
+              if (
+                color.rgb.every((value, index) => value === this.rgb[index])
+              ) {
+                this.selection = `${this.basemap}-${color.name}`
+                break
+              }
+            }
+            this.coloredBasemapHandler(true)
+          } else {
+            this.selection = 'OSM-Base'
+          }
+        } else if (this.basemap === null) {
+          if (this.isMapColored) {
+            this.setColor()
+          }
+          const backgroundObj = {
+            name: null,
+            color: this.rgb,
+          }
+          for (const background of Object.values(this.backgrounds)) {
+            if (
+              background.color.every(
+                (value, index) => value === this.rgb[index],
+              )
+            ) {
+              backgroundObj.name = background.name
+              break
+            }
+          }
+          this.whiteBasemapHandler(false, backgroundObj)
         }
       },
     },
@@ -164,10 +181,7 @@ export default {
       this.isMapColored = flag
       if (this.darkOSMCallback === null) {
         this.darkOSMCallback = (evt) => {
-          this.createColoredBasemapCallback(
-            [this.rgb.r, this.rgb.g, this.rgb.b],
-            evt,
-          )
+          this.createColoredBasemapCallback(this.rgb, evt)
         }
         this.$mapCanvas.mapObj
           .getLayers()
@@ -189,11 +203,8 @@ export default {
         this.$mapCanvas.mapObj.updateSize()
       }
       this.$mapCanvas.mapObj.renderSync()
-      let rgb = []
-      if (this.isMapColored) {
-        rgb = [this.rgb.r, this.rgb.g, this.rgb.b]
-      }
-      this.store.setRGB(rgb)
+
+      this.store.setRGB(this.isMapColored ? this.rgb : [])
       this.emitter.emit('updatePermalink')
     },
     createColoredBasemapCallback(rgb, evt) {
@@ -262,7 +273,7 @@ export default {
         interactions: [],
       })
 
-      if (color.rgb) {
+      if (!color.rgb.every((item) => item === null)) {
         const callback = (evt) => {
           this.createColoredBasemapCallback(color.rgb, evt)
         }
@@ -271,12 +282,8 @@ export default {
       }
       previewMap.on('click', () => {
         const newSelection = `${source}-${color.name}`
-        if (color.rgb) {
-          this.rgb = {
-            r: color.rgb[0],
-            g: color.rgb[1],
-            b: color.rgb[2],
-          }
+        if (!color.rgb.every((item) => item === null)) {
+          this.rgb = color.rgb
         }
         this.selection = newSelection
       })
@@ -287,11 +294,7 @@ export default {
       return this.selection === `${source}-${colorName}`
     },
     setColor() {
-      this.rgb = {
-        r: this.store.getRGB[0],
-        g: this.store.getRGB[1],
-        b: this.store.getRGB[2],
-      }
+      this.rgb = this.store.getRGB
     },
     updateProjection() {
       const newProjection = getProjection(this.currentCRS)
@@ -313,11 +316,14 @@ export default {
     },
     whiteBasemapHandler(visible, background = null) {
       if (background) {
-        document.getElementById('map').style.backgroundColor = background.color
+        const rgb = background.color
+        const cssColor = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
+        document.getElementById('map').style.backgroundColor = cssColor
         this.selection = `null-${background.name}`
+        this.store.setRGB(rgb)
       }
-      const basemap = this.$mapCanvas.mapObj.getLayers().getArray()[0]
-      basemap.setVisible(visible)
+      const activeBasemap = this.$mapCanvas.mapObj.getLayers().getArray()[0]
+      activeBasemap.setVisible(visible)
       this.store.setIsBasemapVisible(visible)
       this.emitter.emit('updatePermalink')
       this.emitter.emit('calcFooterPreview')
