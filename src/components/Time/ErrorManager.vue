@@ -517,17 +517,10 @@ export default {
 </script>
 
 <style scoped>
-.snackbar::v-deep .v-snack__wrapper {
-  border-radius: 15px;
-  top: 42px;
-  min-width: 0px;
+.snackbar {
+  top: -7px;
 }
 .snackMessage {
   white-space: pre-wrap;
-}
-@media (max-width: 959px) {
-  .snackbar::v-deep .v-snack__wrapper {
-    top: 84px;
-  }
 }
 </style>

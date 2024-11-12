@@ -39,6 +39,9 @@ export default {
 </script>
 
 <style>
+.v-snackbar .v-snackbar__wrapper {
+  border-radius: 16px !important;
+}
 .v-tooltip > .v-overlay__content {
   color: white;
   background-color: rgb(84, 84, 84);
