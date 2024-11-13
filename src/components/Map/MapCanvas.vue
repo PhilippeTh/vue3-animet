@@ -23,7 +23,7 @@
       <time-controls />
     </div>
     <loading-bar :loading="loading > 0" />
-    <get-feature-info />
+    <!-- <get-feature-info /> -->
     <span
       color="primary"
       id="animet_version"
@@ -61,7 +61,7 @@ import AnimationRectangle from '../Animation/AnimationRectangle.vue'
 import AutoRefresh from '../Time/AutoRefresh.vue'
 import OLControls from './OLControls.vue'
 import LoadingBar from './LoadingBar.vue'
-import GetFeatureInfo from './GetFeatureInfo.vue'
+// import GetFeatureInfo from './GetFeatureInfo.vue'
 import GlobalConfigs from './GlobalConfigs.vue'
 import LegendControls from './LegendControls.vue'
 import SidePanel from './SidePanel.vue'
@@ -77,7 +77,7 @@ export default {
     AutoRefresh,
     OLControls,
     LoadingBar,
-    GetFeatureInfo,
+    // GetFeatureInfo,
     GlobalConfigs,
     LegendControls,
     SidePanel,
