@@ -27,38 +27,33 @@
       <v-col class="pl-0">
         <v-range-slider
           class="range_slider"
-          ref="rangeSlider"
           v-model="datetimeRangeSlider"
           :disabled="isAnimating"
           :min="0"
           :max="mapTimeSettings.Extent.length - 1"
           :step="1"
-          :rules="[rangeValuesNotSame]"
           :color="hideRangeSlider"
           :thumb-color="hideRangeSlider"
           :track-color="hideRangeSlider"
           :track-fill-color="hideRangeSlider"
           :track-size="2"
+          :thumb-label="false"
           hide-details
           @end="handleEnd"
           @update:model-value="changeDisplayedTime"
         ></v-range-slider>
-        <v-slider
-          class="mt-n8 play-head"
-          :readonly="isAnimating"
-          :min="0"
-          :max="mapTimeSettings.Extent.length - 1"
-          :step="1"
-          color="rgba(0, 0, 0, 0)"
-          track-color="rgba(0, 0, 0, 0)"
-          :track-size="2"
-          thumb-color="rgba(231, 116, 22, 0.5)"
-          :thumb-size="12"
-          hide-details
-          v-model="currentTime"
-          @end="handleEnd"
-          @keydown.left.right.stop
-        ></v-slider>
+        <div
+          class="play-head-slider mt-n8"
+          ref="playHeadSlider"
+          @mousedown="startDrag"
+          @touchstart="startDrag"
+        >
+          <div class="play-head-slider-track"></div>
+          <div
+            class="play-head-slider-thumb"
+            :style="{ left: `${thumbPosition}%` }"
+          ></div>
+        </div>
       </v-col>
     </v-row>
     <v-row justify="space-between" class="mt-n6 bottom_row">
@@ -90,6 +85,7 @@ export default {
   },
   data() {
     return {
+      isDragging: false,
       screenWidth: window.innerWidth,
       throttle: false,
     }
@@ -107,6 +103,7 @@ export default {
       document.activeElement.blur()
     },
     movePlayHead(event) {
+      if (this.isAnimating) return
       if (!this.throttle) {
         this.throttle = true
         switch (event.key) {
@@ -130,11 +127,63 @@ export default {
         }, 250)
       }
     },
-    rangeValuesNotSame(rangeInput) {
-      return !(rangeInput[0] === rangeInput[1])
+    startDrag(event) {
+      if (this.isAnimating) return
+
+      this.isDragging = true
+      this.updateThumbPosition(event)
+
+      const moveHandler = (e) => {
+        if (this.isDragging) {
+          this.updateThumbPosition(e)
+        }
+      }
+
+      const endHandler = () => {
+        this.isDragging = false
+        document.removeEventListener('mousemove', moveHandler)
+        document.removeEventListener('touchmove', moveHandler)
+        document.removeEventListener('mouseup', endHandler)
+        document.removeEventListener('touchend', endHandler)
+        this.handleEnd()
+      }
+
+      document.addEventListener('mousemove', moveHandler)
+      document.addEventListener('touchmove', moveHandler)
+      document.addEventListener('mouseup', endHandler)
+      document.addEventListener('touchend', endHandler)
+    },
+    updateCurrentTime(newDateIndex) {
+      this.emitter.emit('changeTab')
+      if (this.mapTimeSettings.DateIndex !== null) {
+        if (newDateIndex < this.datetimeRangeSlider[0]) {
+          this.store.setMapSnappedLayer(null)
+          this.store.setDatetimeRangeSlider([
+            newDateIndex,
+            this.datetimeRangeSlider[1],
+          ])
+        } else if (newDateIndex > this.datetimeRangeSlider[1]) {
+          this.store.setMapSnappedLayer(null)
+          this.store.setDatetimeRangeSlider([
+            this.datetimeRangeSlider[0],
+            newDateIndex,
+          ])
+        }
+      }
+      this.store.setMapTimeIndex(newDateIndex)
+      this.emitter.emit('updatePermalink')
     },
     updateScreenSize() {
       this.screenWidth = window.innerWidth
+    },
+    updateThumbPosition(event) {
+      const rect = this.$refs.playHeadSlider.getBoundingClientRect()
+      const x = (event.clientX || event.touches[0].clientX) - rect.left
+      const percentage = Math.max(0, Math.min(1, x / rect.width))
+      const max = this.mapTimeSettings.Extent.length - 1
+      const newDateIndex = Math.round(percentage * max)
+
+      this.updateCurrentTime(newDateIndex)
     },
     changeDisplayedTime() {
       this.emitter.emit('changeTab')
@@ -176,31 +225,6 @@ export default {
     mapTimeSettings() {
       return this.store.getMapTimeSettings
     },
-    currentTime: {
-      get() {
-        return this.mapTimeSettings.DateIndex
-      },
-      set(newDateIndex) {
-        this.emitter.emit('changeTab')
-        if (this.mapTimeSettings.DateIndex !== null) {
-          if (newDateIndex < this.datetimeRangeSlider[0]) {
-            this.store.setMapSnappedLayer(null)
-            this.store.setDatetimeRangeSlider([
-              newDateIndex,
-              this.datetimeRangeSlider[1],
-            ])
-          } else if (newDateIndex > this.datetimeRangeSlider[1]) {
-            this.store.setMapSnappedLayer(null)
-            this.store.setDatetimeRangeSlider([
-              this.datetimeRangeSlider[0],
-              newDateIndex,
-            ])
-          }
-        }
-        this.store.setMapTimeIndex(newDateIndex)
-        this.emitter.emit('updatePermalink')
-      },
-    },
     dateFormat() {
       if (this.screenWidth > 850) {
         return 'DATETIME_FULL'
@@ -228,38 +252,15 @@ export default {
         return 'primary'
       }
     },
+    thumbPosition() {
+      const max = this.mapTimeSettings.Extent.length - 1
+      return (this.mapTimeSettings.DateIndex / max) * 100
+    },
   },
 }
 </script>
 
 <style>
-.play-head {
-  --v-focus-opacity: 0.2 !important;
-  --v-hover-opacity: 0.2 !important;
-  --v-pressed-opacity: 0.4 !important;
-}
-.play-head .v-slider-thumb {
-  z-index: 3;
-}
-.play-head .v-slider-thumb__surface {
-  box-shadow: none !important;
-}
-.play-head .v-slider-thumb__surface::before {
-  z-index: 3;
-}
-.play-head .v-slider-thumb__surface::after {
-  height: 24px;
-  width: 24px;
-}
-.play-head .v-slider-track {
-  z-index: 1;
-}
-.play-head .v-slider-thumb--pressed {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-}
-.play-head .v-slider-track__fill {
-  height: 2px !important;
-}
 .range_slider {
   --v-focus-opacity: 0.2 !important;
   --v-hover-opacity: 0.2 !important;
@@ -300,6 +301,41 @@ export default {
 </style>
 
 <style scoped>
+.play-head-slider {
+  position: relative;
+  left: 8px;
+  height: 32px;
+  width: calc(100% - 16px);
+  cursor: pointer;
+}
+
+.play-head-slider-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0);
+  transform: translateY(-50%);
+}
+
+.play-head-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: rgba(231, 116, 22, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  z-index: 3;
+}
+
+.play-head-slider-thumb:hover,
+.play-head-slider-thumb:active {
+  transform: translate(-50%, -50%) scale(1.8);
+}
+
 .button_group {
   display: inline-block;
 }
