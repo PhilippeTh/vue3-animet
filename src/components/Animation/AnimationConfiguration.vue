@@ -134,9 +134,6 @@
 <script>
 import { useI18n } from 'vue-i18n'
 
-import CreateAnimation from '../Animation/CreateAnimation.vue'
-import ExportAnimation from '../Animation/ExportAnimation.vue'
-
 export default {
   inject: ['store'],
   mounted() {
@@ -228,10 +225,6 @@ export default {
       resOptions: ['720p', '1080p'],
       t: useI18n().t,
     }
-  },
-  components: {
-    CreateAnimation,
-    ExportAnimation,
   },
   methods: {
     checkFPS(focused) {

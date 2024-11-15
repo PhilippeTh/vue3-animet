@@ -23,7 +23,7 @@
       <time-controls />
     </div>
     <loading-bar :loading="loading > 0" />
-    <!-- <get-feature-info /> -->
+    <get-feature-info />
     <span
       color="primary"
       id="animet_version"
@@ -56,33 +56,11 @@ import Stroke from 'ol/style/Stroke.js'
 import TileLayer from 'ol/layer/Tile'
 import View from 'ol/View'
 
-import AnimationCanvas from '../Animation/AnimationCanvas.vue'
-import AnimationRectangle from '../Animation/AnimationRectangle.vue'
-import AutoRefresh from '../Time/AutoRefresh.vue'
-import OLControls from './OLControls.vue'
-import LoadingBar from './LoadingBar.vue'
-// import GetFeatureInfo from './GetFeatureInfo.vue'
-import GlobalConfigs from './GlobalConfigs.vue'
-import LegendControls from './LegendControls.vue'
-import SidePanel from './SidePanel.vue'
-import TimeControls from '../Time/TimeControls.vue'
 import { useI18n } from 'vue-i18n'
 import { version } from '../../../package.json'
 
 export default {
   inject: ['store'],
-  components: {
-    AnimationCanvas,
-    AnimationRectangle,
-    AutoRefresh,
-    OLControls,
-    LoadingBar,
-    // GetFeatureInfo,
-    GlobalConfigs,
-    LegendControls,
-    SidePanel,
-    TimeControls,
-  },
   mounted() {
     this.emitter.on('goToExtent', this.goToExtentHandler)
     this.emitter.on('buildLayer', this.buildLayer)

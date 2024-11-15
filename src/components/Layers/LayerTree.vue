@@ -57,9 +57,61 @@
                 v-for="node in filteredTreeNodes[index]"
                 :key="`${node.Name}`"
                 :node="node"
+                key-prop="Name"
+                title-prop="Title"
                 @node-toggled="handleNodeToggle"
                 @request="requestLayerData"
-              ></tree-node>
+              >
+                <template #node-icon="{ node }">
+                  <v-btn
+                    icon
+                    class="icon-only-btn"
+                    density="comfortable"
+                    variant="text"
+                    :disabled="isAnimating && playState !== 'play'"
+                  >
+                    <v-icon
+                      color="primary"
+                      :disabled="isAnimating && playState !== 'play'"
+                    >
+                      {{
+                        $mapLayers.arr.some(
+                          (l) => l.get('layerName') === node.Name,
+                        )
+                          ? 'mdi-minus'
+                          : 'mdi-plus'
+                      }}
+                    </v-icon>
+                  </v-btn>
+                </template>
+
+                <template #title-slot="{ node }">
+                  <v-tooltip
+                    :text="node.Title"
+                    location="bottom"
+                    open-delay="750"
+                  >
+                    <template v-slot:activator="{ props }">
+                      <span
+                        class="title"
+                        v-bind="props"
+                        :class="{
+                          'title-leaf': node.isLeaf,
+                          'text-primary': $mapLayers.arr.some(
+                            (l) => l.get('layerName') === node.Name,
+                          ),
+                        }"
+                      >
+                        {{ node.Title }}
+                        <template v-if="node.isLeaf">
+                          <br />
+                          <span class="subtitle">{{ node.Name }}</span>
+                        </template>
+                      </span>
+                    </template>
+                  </v-tooltip>
+                </template>
+              </tree-node>
             </div>
           </v-card-text>
         </v-card>
@@ -97,13 +149,8 @@
 import axios from '../../utils/AxiosConfig.js'
 import { useDisplay } from 'vuetify'
 
-import TreeNode from './TreeNode.vue'
-
 export default {
   inject: ['store'],
-  components: {
-    TreeNode,
-  },
   created() {
     const { smAndDown } = useDisplay()
     this.$watch(
@@ -362,6 +409,15 @@ export default {
 </script>
 
 <style scoped>
+.icon-only-btn {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+.icon-only-btn:hover {
+  background-color: rgba(211, 211, 211, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 .radius {
   border-radius: 0px;
 }
@@ -371,6 +427,18 @@ export default {
 }
 .source-tabs:deep(.v-btn__content) {
   white-space: normal;
+}
+.subtitle {
+  color: grey;
+  display: block;
+  font-size: 0.8em;
+  margin-top: -4px;
+}
+.title-leaf {
+  display: block;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .treeview {
   font-size: 1.11em;

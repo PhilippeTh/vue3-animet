@@ -50,15 +50,10 @@
 <script>
 import { Duration } from 'luxon'
 
-import LocaleSelector from './LocaleSelector.vue'
-
 import datetimeManipulations from '../../mixins/datetimeManipulations'
 
 export default {
   inject: ['store'],
-  components: {
-    LocaleSelector,
-  },
   mixins: [datetimeManipulations],
   data() {
     return {

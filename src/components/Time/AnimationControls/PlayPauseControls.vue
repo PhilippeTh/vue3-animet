@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import ControllerOptions from './ControllerOptions.vue'
-
 export default {
   inject: ['store'],
   props: {
@@ -51,9 +49,6 @@ export default {
     this.killUnmountLoop = true
     this.emitter.off('playAnimation', this.play)
     this.emitter.off('stopAnimation', this.playPause)
-  },
-  components: {
-    ControllerOptions,
   },
   data() {
     return {

@@ -127,9 +127,6 @@ export default {
       return this.store.getGeoMetWmsSources
     },
   },
-  // components: {
-  //   MapCanvas,
-  // },
 }
 </script>
 
