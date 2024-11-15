@@ -122,19 +122,8 @@
 <script>
 import datetimeManipulations from '../../mixins/datetimeManipulations'
 
-import ErrorManager from './ErrorManager.vue'
-import IntervalLocaleSelector from './IntervalLocaleSelector.vue'
-import PlayPauseControls from './AnimationControls/PlayPauseControls.vue'
-import TimeSlider from './TimeSlider.vue'
-
 export default {
   inject: ['store'],
-  components: {
-    ErrorManager,
-    IntervalLocaleSelector,
-    PlayPauseControls,
-    TimeSlider,
-  },
   mixins: [datetimeManipulations],
   data() {
     return {

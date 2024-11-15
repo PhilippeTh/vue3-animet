@@ -53,16 +53,11 @@
 </template>
 
 <script>
-import ShareSocialLinks from './ShareSocialLinks.vue'
-
 import { useRouter, useRoute } from 'vue-router'
 import { useTheme } from 'vuetify'
 
 export default {
   inject: ['store'],
-  components: {
-    ShareSocialLinks,
-  },
   data() {
     return {
       dialog: false,

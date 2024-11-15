@@ -45,15 +45,13 @@
             @keydown.left.right.stop
             @click:clear="filterOnInput()"
           ></v-text-field>
-          <div ref="locale-tree">
-            <locale-tree-node
-              v-for="node in filteredTree"
-              :key="`${node.name}`"
-              :node="node"
-              @node-toggled="handleNodeToggle"
-              @request="selectTimeZone"
-            ></locale-tree-node>
-          </div>
+          <tree-node
+            v-for="node in filteredTree"
+            :key="`${node.name}`"
+            :node="node"
+            @node-toggled="handleNodeToggle"
+            @request="selectTimeZone"
+          ></tree-node>
         </v-container>
         <div class="sticky-container">
           <v-tooltip location="bottom" offset-overflow>

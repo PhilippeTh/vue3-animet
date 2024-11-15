@@ -40,17 +40,10 @@
 </template>
 
 <script>
-import MapPreviews from './MapPreviews.vue'
-import ProjectionHandler from './ProjectionHandler.vue'
-
 import { useTheme } from 'vuetify'
 
 export default {
   inject: ['store'],
-  components: {
-    MapPreviews,
-    ProjectionHandler,
-  },
   mounted() {
     window.addEventListener('keydown', this.closeMenu)
   },

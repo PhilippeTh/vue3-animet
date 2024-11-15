@@ -78,24 +78,19 @@
             >
               <v-btn
                 v-if="index !== 0"
-                :disabled="index === 0 || (isAnimating && playState !== 'play')"
+                :disabled="isAnimating"
                 @click="changeLayerOrder(index - 1)"
-                icon
+                icon="mdi-arrow-up"
                 variant="text"
               >
-                <v-icon> mdi-arrow-up </v-icon>
               </v-btn>
               <v-btn
                 v-if="index + 1 < numLayers"
-                :disabled="
-                  index + 1 >= numLayers ||
-                  (isAnimating && playState !== 'play')
-                "
+                :disabled="isAnimating"
                 @click="changeLayerOrder(index)"
-                icon
+                icon="mdi-arrow-down"
                 variant="text"
               >
-                <v-icon> mdi-arrow-down </v-icon>
               </v-btn>
             </v-list-item-action>
           </template>
@@ -108,23 +103,8 @@
 <script>
 import datetimeManipulations from '../../mixins/datetimeManipulations'
 
-import ModelRunHandler from './ModelRunHandler.vue'
-import OpacityHandler from './OpacityHandler.vue'
-import RemoveLayerHandler from './RemoveLayerHandler.vue'
-import SnappedLayerHandler from './SnappedLayerHandler.vue'
-import StyleHandler from './StyleHandler.vue'
-import VisibilityHandler from './VisibilityHandler.vue'
-
 export default {
   inject: ['store'],
-  components: {
-    ModelRunHandler,
-    OpacityHandler,
-    RemoveLayerHandler,
-    SnappedLayerHandler,
-    StyleHandler,
-    VisibilityHandler,
-  },
   mixins: [datetimeManipulations],
   methods: {
     changeLayerOrder(index) {

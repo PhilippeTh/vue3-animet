@@ -70,19 +70,12 @@
 <script>
 import datetimeManipulations from '../../mixins/datetimeManipulations'
 
-import ArrowControls from './AnimationControls/ArrowControls.vue'
-import PlayPauseControls from './AnimationControls/PlayPauseControls.vue'
-
 export default {
   inject: ['store'],
   props: {
     hide: Boolean,
   },
   mixins: [datetimeManipulations],
-  components: {
-    ArrowControls,
-    PlayPauseControls,
-  },
   data() {
     return {
       isDragging: false,

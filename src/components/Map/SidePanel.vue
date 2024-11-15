@@ -101,18 +101,9 @@
 </template>
 
 <script>
-import AnimationConfiguration from '../Animation/AnimationConfiguration.vue'
-import LayerConfiguration from '../Layers/LayerConfiguration.vue'
-import LayerTree from '../Layers/LayerTree.vue'
-
 export default {
   name: 'SidePanel',
   inject: ['store'],
-  components: {
-    AnimationConfiguration,
-    LayerConfiguration,
-    LayerTree,
-  },
   mounted() {
     this.emitter.on('openPanel', () => {
       if (!this.menuOpen) {
