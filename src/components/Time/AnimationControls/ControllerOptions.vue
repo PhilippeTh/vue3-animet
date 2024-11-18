@@ -32,8 +32,8 @@
         <template v-slot:label>
           <span
             :class="{
-              'white--text': $vuetify.theme.dark,
-              'black--text': !$vuetify.theme.dark,
+              'text-white': this.theme.global.current.value.dark,
+              'text-black': !this.theme.global.current.value.dark,
             }"
             >{{ $t(action) }}</span
           >
@@ -44,8 +44,14 @@
 </template>
 
 <script>
+import { useTheme } from 'vuetify'
+
 export default {
   inject: ['store'],
+  setup() {
+    const theme = useTheme()
+    return { theme }
+  },
   props: {
     hide: Boolean,
   },
@@ -82,6 +88,14 @@ export default {
 }
 .controller-options-switches {
   margin-top: -8px;
+}
+
+.controller-options-switches:deep(.v-selection-control__input > .v-icon) {
+  opacity: 1;
+}
+.controller-options-switches:deep(.v-label) {
+  opacity: 1;
+  font-size: 1rem;
 }
 .hide-controls {
   display: none;

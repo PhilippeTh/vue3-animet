@@ -47,7 +47,7 @@
               color="primary"
               density="compact"
               variant="underlined"
-              @keydown.left.right.stop
+              @keydown.left.right.space.stop
               @input="filterOnInput(index)"
               @click:clear="filterOnInput(index)"
             >
@@ -126,14 +126,14 @@
             :key="index"
             :disabled="isAnimating"
             hide-details
-            class="pl-12"
+            class="pl-12 overlay-cb"
             @change="emitter.emit('overlayToggle', { values, overlay })"
           >
             <template v-slot:label>
               <span
                 :class="{
-                  'white--text': $vuetify.theme.dark,
-                  'black--text': !$vuetify.theme.dark,
+                  'text-white': this.theme.global.current.value.dark,
+                  'text-black': !this.theme.global.current.value.dark,
                 }"
                 >{{ $t(overlay) }}</span
               >
@@ -148,9 +148,14 @@
 <script>
 import axios from '../../utils/AxiosConfig.js'
 import { useDisplay } from 'vuetify'
+import { useTheme } from 'vuetify'
 
 export default {
   inject: ['store'],
+  setup() {
+    const theme = useTheme()
+    return { theme }
+  },
   created() {
     const { smAndDown } = useDisplay()
     this.$watch(
@@ -318,33 +323,29 @@ export default {
         if (fn(o) || children.length) {
           r.push(
             Object.assign({}, o, children.length && { children }, {
-              isOpen: this.closedNodes.has(o.Name) ? false : true,
+              isOpen: !this.closedNodes.has(o.Name),
             }),
           )
         }
         if (this.closedNodes.has(o.Name)) {
           // delete o.isOpen;
-          console.log(o)
         }
         return r
       }, [])
     },
     filterOnInput(index) {
       if (this.searchGeoMet[index] !== null) {
-        if (
-          this.searchGeoMet[index].length >= 2 &&
-          this.searchGeoMet[index] !== ''
-        ) {
+        if (this.searchGeoMet[index].trim().length >= 2) {
           this.activateNodeCheck = true
           this.filteredTreeNodes[index] = this.filterCallbackFunction(
             this.geometTreeItems[index],
-            (item) =>
-              item['Title']
+            (item) => {
+              const searchTerms = this.searchGeoMet[index]
                 .toLowerCase()
-                .indexOf(this.searchGeoMet[index].toLowerCase()) > -1 ||
-              item['Name']
-                .toLowerCase()
-                .indexOf(this.searchGeoMet[index].toLowerCase()) > -1,
+                .split(' ')
+              const itemText = `${item['Title']} ${item['Name']}`.toLowerCase()
+              return searchTerms.every((term) => itemText.includes(term))
+            },
           )
         } else {
           this.activateNodeCheck = false
@@ -417,6 +418,13 @@ export default {
 .icon-only-btn:hover {
   background-color: rgba(211, 211, 211, 0.2);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.overlay-cb:deep(.v-selection-control__input > .v-icon) {
+  opacity: 1;
+}
+.overlay-cb:deep(.v-label) {
+  opacity: 1;
+  font-size: 1.08rem;
 }
 .radius {
   border-radius: 0px;

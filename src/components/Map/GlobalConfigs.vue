@@ -10,7 +10,7 @@
         md="4"
         class="d-flex pa-0 pt-2 justify-center align-center"
       >
-        <v-spacer v-if="$vuetify.display.mdAndUp"></v-spacer>
+        <v-spacer v-if="mdAndUp"></v-spacer>
         <customization-menu class="mr-3" />
         <page-theme class="mr-3" />
         <language-select class="mr-3" />
@@ -33,6 +33,12 @@
     </v-row>
   </v-container>
 </template>
+
+<script setup>
+import { useDisplay } from 'vuetify'
+
+const { mdAndUp } = useDisplay()
+</script>
 
 <style scoped>
 .info-btn {
