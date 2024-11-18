@@ -42,7 +42,7 @@
             density="compact"
             variant="outlined"
             @input="filterOnInput()"
-            @keydown.left.right.stop
+            @keydown.left.right.space.stop
             @click:clear="filterOnInput()"
           ></v-text-field>
           <tree-node

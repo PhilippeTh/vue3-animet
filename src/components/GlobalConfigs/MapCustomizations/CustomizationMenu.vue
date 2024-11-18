@@ -1,12 +1,6 @@
 <template>
   <div id="expandableCustomControl" fluid>
-    <v-menu
-      eager
-      class="customize-menu"
-      offset="10"
-      content-class="white black--text"
-      v-model="toggleMenu"
-    >
+    <v-menu eager class="customize-menu" offset="10" v-model="toggleMenu">
       <template v-slot:activator="{ props: onMenu }">
         <v-tooltip location="bottom">
           <template v-slot:activator="{ props: onTooltip }">
